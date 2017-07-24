@@ -53,6 +53,8 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import static com.example.win.a2vent.user_Event_Adapter.source_URL;
+
 public class owner_AddStore extends AppCompatActivity implements View.OnClickListener {
 
     TextView v_com_name;
@@ -71,12 +73,11 @@ public class owner_AddStore extends AppCompatActivity implements View.OnClickLis
     Button btn_search_addr;
     TextView v_com_addr2;
 
-
-    String com_name=null;
-    String com_addr=null;
+    String com_name = null;
+    String com_addr = null;
     String com_category;
-    String com_manager=null;
-    String com_URI=null;
+    String com_manager = null;
+    String com_URI = null;
     //유저목록 불러와야됨
     //이미지 삽입 해야됨
     String ID;
@@ -87,18 +88,18 @@ public class owner_AddStore extends AppCompatActivity implements View.OnClickLis
     WebView webview;
     private Handler handler;
 
-
     //사진 관련
     Button btn_gall;
     Button btn_picture;
     Uri photoUri;
     String file_name;
     String file_dir;
-    String [] city = null;
+    String[] city = null;
+
     private static final int PICK_FROM_CAMERA = 1; //카메라 촬영으로 사진 가져오기
     private static final int PICK_FROM_ALBUM = 2; //앨범에서 사진 가져오기
     private static final int CROP_FROM_CAMERA = 3; //가져온 사진을 자르기 위한 변수
-    private static final int SERCH_ADDR = 4; //가져온 사진을 자르기 위한 변수
+    private static final int SEARCH_ADDR = 4; //가져온 사진을 자르기 위한 변수
 
 
     @Override
@@ -110,17 +111,15 @@ public class owner_AddStore extends AppCompatActivity implements View.OnClickLis
         v_com_addr = (TextView) findViewById(R.id.com_form_addr);
         v_com_addr2 = (TextView) findViewById(R.id.com_form_addr2);
         v_com_radio_culture = (RadioButton) findViewById(R.id.com_form_radio_culture);
-        v_com_radio_food = (RadioButton) findViewById(R.id.com_form_radio_food);
+        v_com_radio_food = (RadioButton) findViewById(R.id.com_form_radio_meal);
         v_com_radio_beauty = (RadioButton) findViewById(R.id.com_form_radio_beauty);
         v_com_radio_fashion = (RadioButton) findViewById(R.id.com_form_radio_fashion);
-        v_com_radio_travel = (RadioButton) findViewById(R.id.com_form_radio_travel);
         v_com_manager = (Spinner) findViewById(R.id.com_form_manager);
         v_com_number = (TextView) findViewById(R.id.com_form_number);
         v_com_radio = (RadioGroup) findViewById(R.id.com_form_radio);
         btn_gall = (Button) findViewById(R.id.com_btn_gall);
         btn_picture = (Button) findViewById(R.id.com_btn_picture);
-        btn_search_addr=(Button)findViewById(R.id.com_btn_search_addr);
-
+        btn_search_addr = (Button) findViewById(R.id.com_btn_search_addr);
 
 
 //        v_com_URI
@@ -136,46 +135,38 @@ public class owner_AddStore extends AppCompatActivity implements View.OnClickLis
             public void onCheckedChanged(RadioGroup group, @IdRes int checkedId) {
                 switch (checkedId) {
                     case R.id.com_form_radio_culture:
+                        com_category = "0";
+                        break;
+                    case R.id.com_form_radio_meal:
                         com_category = "1";
                         break;
-                    case R.id.com_form_radio_food:
+                    case R.id.com_form_radio_beauty:
                         com_category = "2";
                         break;
-                    case R.id.com_form_radio_beauty:
-                        com_category = "3";
-                        break;
                     case R.id.com_form_radio_fashion:
-                        com_category = "4";
+                        com_category = "3";
                         break;
                 }
             }
         });
 
         btn_gall.setOnClickListener(new View.OnClickListener() {
-                                        @Override
-                                        public void onClick(View v) {
-
-                                            goToAlbum();
-
-                                        }
-                                    }
-        );
+            @Override
+            public void onClick(View v) {
+                goToAlbum();
+            }
+        });
         btn_picture.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 takePhoto();
             }
         });
-
-        btn_search_addr.setOnClickListener(new View.OnClickListener(){
-
+        btn_search_addr.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
-                Intent i = new Intent(owner_AddStore.this,owner_AddStore_webView.class);
-
-                startActivityForResult(i,SERCH_ADDR);
-
+                Intent i = new Intent(owner_AddStore.this, owner_AddStore_webView.class);
+                startActivityForResult(i, SEARCH_ADDR);
 
 //                // WebView 초기화
 //                init_webView();
@@ -183,13 +174,10 @@ public class owner_AddStore extends AppCompatActivity implements View.OnClickLis
 //                // 핸들러를 통한 JavaScript 이벤트 반응
 //                handler = new Handler();
             }
-        } );
+        });
 
 
         managerList = new ArrayList<String>();
-
-
-
 
 
 //        Log.e("시티",city.toString());
@@ -214,14 +202,13 @@ public class owner_AddStore extends AppCompatActivity implements View.OnClickLis
 //        }
 
 
-
     }
 
-    public void asdf(){
-        city=new String[managerList.size()];
+    public void asdf() {
+        city = new String[managerList.size()];
 
-        for(int i = 0; i<city.length;i++){
-            city[i]=managerList.get(i);
+        for (int i = 0; i < city.length; i++) {
+            city[i] = managerList.get(i);
 
         }
 
@@ -262,19 +249,18 @@ public class owner_AddStore extends AppCompatActivity implements View.OnClickLis
                 case R.id.com_button:
                     com_number = v_com_number.getText().toString();
                     com_name = v_com_name.getText().toString();
-                    if(v_com_addr2==null){
-                        com_addr=null;
+                    if (v_com_addr2 == null) {
+                        com_addr = null;
                         com_addr = v_com_addr.getText().toString();
-                    }else{
-                        com_addr=null;
+                    } else {
+                        com_addr = null;
                         com_addr = v_com_addr.getText().toString() + v_com_addr2.getText().toString();
                     }
 
-                    Log.e("맞나?",com_addr);
+                    Log.e("맞나?", com_addr);
 
 
-
-                    ID="1";
+                    ID = "1";
                     com_manager = v_com_manager.getSelectedItem().toString();
                     com_URI = file_name;
 
@@ -335,7 +321,7 @@ public class owner_AddStore extends AppCompatActivity implements View.OnClickLis
             int maxBufferSize = 1 * 1024 * 1024;
             byte[] buffer;
 
-            String serverURL = "http://192.168.0.106/eventApp/YTest.php";
+            String serverURL = source_URL + "YTest.php";
             String postParameters = "&com_number=" + com_number + "&com_name=" + com_name
                     + "&com_addr=" + com_addr + "&com_category=" + com_category
                     + "&com_manager=" + com_manager + "&com_URI=" + com_URI + "&id=" + id;
@@ -562,10 +548,10 @@ public class owner_AddStore extends AppCompatActivity implements View.OnClickLis
                 Log.e("ERROR", e.getMessage().toString());
 
             }
-        } else if (requestCode== SERCH_ADDR){
+        } else if (requestCode == SEARCH_ADDR) {
             v_com_addr.setText(data.getStringExtra("addr"));
-            String test=data.getStringExtra("addr");
-            Log.e("맞나?",test);
+            String test = data.getStringExtra("addr");
+            Log.e("맞나?", test);
 
 
         }
@@ -645,7 +631,7 @@ public class owner_AddStore extends AppCompatActivity implements View.OnClickLis
             try {
 
 
-                URL url = new URL("http://192.168.0.106/EventApp/2ventAddstoreGetManager.php");
+                URL url = new URL(source_URL + "2ventAddstoreGetManager.php");
                 HttpURLConnection httpURLConnection = (HttpURLConnection) url.openConnection();
                 httpURLConnection.setRequestMethod("POST");
 
@@ -688,7 +674,6 @@ public class owner_AddStore extends AppCompatActivity implements View.OnClickLis
             asdf();
 
 
-
         }
 
     }
@@ -710,20 +695,14 @@ public class owner_AddStore extends AppCompatActivity implements View.OnClickLis
                 managerList.add(item.getString("id"));
 //                managerList.add(item.getgetString("id"));
 //            managerList.add(item.getString());
-                Log.e("item",item.toString());
+                Log.e("item", item.toString());
 
             }
-            Log.e("히",jsonArray.toString());
-            Log.e("뭐야",String.valueOf(managerList.size()));
 
-            Log.i("욥",managerList.toString());
-            Log.e("흠",managerList.get(2));
         } catch (JSONException e) {
             e.printStackTrace();
         }
     }
-
-
 
 
 }

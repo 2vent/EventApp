@@ -56,6 +56,8 @@ import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 
+import static com.example.win.a2vent.user_Event_Adapter.source_URL;
+
 /**
  * Created by win on 2017-07-10.
  */
@@ -689,7 +691,7 @@ public class owner_Event_Form extends AppCompatActivity {
             String com_number = params[17];
             String id = params[18];
 
-            String serverURL = "http://192.168.0.7/2vent/2ventAddevent.php";
+            String serverURL = source_URL + "2ventAddevent.php";
 
             try {
 

@@ -4,6 +4,7 @@ import android.Manifest;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.databinding.DataBindingUtil;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
@@ -20,6 +21,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
 
+import com.example.win.a2vent.databinding.OwnerEventMainBinding;
 import com.gun0912.tedpermission.PermissionListener;
 import com.gun0912.tedpermission.TedPermission;
 
@@ -35,6 +37,10 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import static android.content.ContentValues.TAG;
+import static com.example.win.a2vent.activity_User_Login.savedID;
+import static com.example.win.a2vent.user_Event_Adapter.source_URL;
+
 /**
  * Created by win on 2017-07-06.
  */
@@ -42,28 +48,34 @@ import java.util.HashMap;
 public class owner_Event_Main extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
     private static String TAG = "owner_Event_Main";
-    private static final String TAG_JSON = "company";
+    private static final String TAG_JSON = "Company";
     String mJsonString;
     private int nType = 1;
 
     Context mContext;
-    RecyclerView recyclerView;
-    owner_Event_Adapter Adapter;
     FloatingActionButton fab;
-    owner_Addstore_Adapter Adapter_com;
-    RecyclerView.LayoutManager layoutManager;
-    ArrayList<owner_Event_Item> event_list = new ArrayList<owner_Event_Item>();
+
+    owner_companyDB_test owner_companyDB_test;
+    OwnerEventMainBinding binding_OwnerMain;
+
+    RecyclerView.Adapter com_rAdapter;
+    ArrayList my_company;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.owner_event_main);
+        binding_OwnerMain = DataBindingUtil.setContentView(this, R.layout.owner_event_main);
+
+        Log.d("savedID : ",savedID);
+
+        mContext = getApplicationContext();
 
         PermissionListener permissionListener = new PermissionListener() {
             @Override
             public void onPermissionGranted() {
 
             }
+
             @Override
             public void onPermissionDenied(ArrayList<String> deniedPermissions) {
                 Toast.makeText(owner_Event_Main.this, "Permission Denied\n"
@@ -88,7 +100,7 @@ public class owner_Event_Main extends AppCompatActivity implements NavigationVie
                 if (nType == 1) {
                     Intent intent_eventform = new Intent(getBaseContext(), owner_Event_Addevent.class);
                     startActivity(intent_eventform);
-                } else {
+                } else if (nType == 0) {
                     Intent intent_addstore = new Intent(getBaseContext(), owner_AddStore.class);
                     startActivity(intent_addstore);
                 }
@@ -103,21 +115,6 @@ public class owner_Event_Main extends AppCompatActivity implements NavigationVie
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
-
-        event_list.add(new owner_Event_Item(1, 1, 1, "fiwj", 5000, 4000, 4, "20170707", "20170707", "5018", "5018", 0, 1, 59, 59, 1, "대구", "3", "던파", "문", "ad"));
-        event_list.add(new owner_Event_Item(1, 1, 1, "fiwj", 5000, 4000, 4, "20170707", "20170707", "5018", "5018", 0, 1, 59, 59, 1, "대구", "3", "던파", "동", "ad"));
-        event_list.add(new owner_Event_Item(1, 1, 1, "fiwj", 5000, 4000, 4, "20170707", "20170707", "5018", "5018", 0, 1, 59, 59, 1, "대구", "3", "던파", "이이이이이이", "ad"));
-        event_list.add(new owner_Event_Item(1, 1, 1, "fiwj", 5000, 4000, 4, "20170707", "20170707", "5018", "5018", 0, 1, 59, 59, 1, "대구", "3", "던파", "상", "ad"));
-        event_list.add(new owner_Event_Item(1, 1, 1, "fiwj", 5000, 4000, 4, "20170707", "20170707", "5018", "5018", 0, 1, 59, 59, 1, "대구", "3", "던파", "사", "ad"));
-
-        recyclerView = (RecyclerView) findViewById(R.id.event_owner_main);
-        recyclerView.setHasFixedSize(true);
-
-        layoutManager = new LinearLayoutManager(this);
-        recyclerView.setLayoutManager(layoutManager);
-
-        Adapter = new owner_Event_Adapter(event_list);
-        recyclerView.setAdapter(Adapter);
     }
 
     @Override
@@ -137,68 +134,17 @@ public class owner_Event_Main extends AppCompatActivity implements NavigationVie
 
         if (id == R.id.my_company) {
             nType = 0;
-            ArrayList<owner_Addstore_Item> items = new ArrayList<owner_Addstore_Item>();
-//            items.add(new owner_Addstore_Item("1", "SKT", "경북 구미시 우리집", "10101", "kjd99002", "smt001", "s"));
-//            items.add(new owner_Addstore_Item("2", "LG", "경북 구미시 우리집", "10101", "kjd99001", "smt001", "s"));
-//            items.add(new owner_Addstore_Item("3", "지앤케이", "대구 동대구역 앞", "10101", "kjd99003", "smt001", "s"));
-//            items.add(new owner_Addstore_Item("4", "모름", "경북 구미시 우리집", "10101", "kjd99004", "smt001", "s"));
-
-            layoutManager = new LinearLayoutManager(this);
-            recyclerView.setLayoutManager(layoutManager);
-
-            Adapter_com = new owner_Addstore_Adapter(items);
-            recyclerView.setAdapter(Adapter_com);
+            owner_companyDB_test = new owner_companyDB_test();
+            owner_companyDB_test.execute(source_URL + "2ventGetCompany.php");
 
         } else if (id == R.id.on_event) {
             nType = 1;
-            event_list.add(new owner_Event_Item(1, 1, 1, "fiwj", 5000, 4000, 4, "20170707", "20170707", "5018", "5018", 0, 1, 59, 59, 1, "대구", "3", "던파", "문", "ad"));
-            event_list.add(new owner_Event_Item(1, 1, 1, "fiwj", 5000, 4000, 4, "20170707", "20170707", "5018", "5018", 0, 1, 59, 59, 1, "대구", "3", "던파", "동", "ad"));
-            event_list.add(new owner_Event_Item(1, 1, 1, "fiwj", 5000, 4000, 4, "20170707", "20170707", "5018", "5018", 0, 1, 59, 59, 1, "대구", "3", "던파", "이이이이이이", "ad"));
-            event_list.add(new owner_Event_Item(1, 1, 1, "fiwj", 5000, 4000, 4, "20170707", "20170707", "5018", "5018", 0, 1, 59, 59, 1, "대구", "3", "던파", "상", "ad"));
-            event_list.add(new owner_Event_Item(1, 1, 1, "fiwj", 5000, 4000, 4, "20170707", "20170707", "5018", "5018", 0, 1, 59, 59, 1, "대구", "3", "던파", "사", "ad"));
-
-            recyclerView = (RecyclerView) findViewById(R.id.event_owner_main);
-            recyclerView.setHasFixedSize(true);
-
-            layoutManager = new LinearLayoutManager(this);
-            recyclerView.setLayoutManager(layoutManager);
-
-            Adapter = new owner_Event_Adapter(event_list);
-            recyclerView.setAdapter(Adapter);
 
         } else if (id == R.id.temp_event) {
             nType = 1;
-            event_list.add(new owner_Event_Item(1, 1, 1, "fiwj", 5000, 4000, 4, "20170707", "20170707", "5018", "5018", 0, 1, 59, 59, 1, "대구", "3", "던파", "문", "ad"));
-            event_list.add(new owner_Event_Item(1, 1, 1, "fiwj", 5000, 4000, 4, "20170707", "20170707", "5018", "5018", 0, 1, 59, 59, 1, "대구", "3", "던파", "동", "ad"));
-            event_list.add(new owner_Event_Item(1, 1, 1, "fiwj", 5000, 4000, 4, "20170707", "20170707", "5018", "5018", 0, 1, 59, 59, 1, "대구", "3", "던파", "이이이이이이", "ad"));
-            event_list.add(new owner_Event_Item(1, 1, 1, "fiwj", 5000, 4000, 4, "20170707", "20170707", "5018", "5018", 0, 1, 59, 59, 1, "대구", "3", "던파", "상", "ad"));
-            event_list.add(new owner_Event_Item(1, 1, 1, "fiwj", 5000, 4000, 4, "20170707", "20170707", "5018", "5018", 0, 1, 59, 59, 1, "대구", "3", "던파", "사", "ad"));
-
-            recyclerView = (RecyclerView) findViewById(R.id.event_owner_main);
-            recyclerView.setHasFixedSize(true);
-
-            layoutManager = new LinearLayoutManager(this);
-            recyclerView.setLayoutManager(layoutManager);
-
-            Adapter = new owner_Event_Adapter(event_list);
-            recyclerView.setAdapter(Adapter);
 
         } else if (id == R.id.end_event) {
             nType = 1;
-            event_list.add(new owner_Event_Item(1, 1, 1, "fiwj", 5000, 4000, 4, "20170707", "20170707", "5018", "5018", 0, 1, 59, 59, 1, "대구", "3", "던파", "문", "ad"));
-            event_list.add(new owner_Event_Item(1, 1, 1, "fiwj", 5000, 4000, 4, "20170707", "20170707", "5018", "5018", 0, 1, 59, 59, 1, "대구", "3", "던파", "동", "ad"));
-            event_list.add(new owner_Event_Item(1, 1, 1, "fiwj", 5000, 4000, 4, "20170707", "20170707", "5018", "5018", 0, 1, 59, 59, 1, "대구", "3", "던파", "이이이이이이", "ad"));
-            event_list.add(new owner_Event_Item(1, 1, 1, "fiwj", 5000, 4000, 4, "20170707", "20170707", "5018", "5018", 0, 1, 59, 59, 1, "대구", "3", "던파", "상", "ad"));
-            event_list.add(new owner_Event_Item(1, 1, 1, "fiwj", 5000, 4000, 4, "20170707", "20170707", "5018", "5018", 0, 1, 59, 59, 1, "대구", "3", "던파", "사", "ad"));
-
-            recyclerView = (RecyclerView) findViewById(R.id.event_owner_main);
-            recyclerView.setHasFixedSize(true);
-
-            layoutManager = new LinearLayoutManager(this);
-            recyclerView.setLayoutManager(layoutManager);
-
-            Adapter = new owner_Event_Adapter(event_list);
-            recyclerView.setAdapter(Adapter);
 
         }
 
@@ -207,7 +153,7 @@ public class owner_Event_Main extends AppCompatActivity implements NavigationVie
         return true;
     }
 
-    private class GetData extends AsyncTask<String, Void, String> {
+    public class owner_companyDB_test extends AsyncTask<String, Void, String> {
         ProgressDialog progressDialog;
         String errorString = null;
 
@@ -220,24 +166,7 @@ public class owner_Event_Main extends AppCompatActivity implements NavigationVie
         }
 
         @Override
-        protected void onPostExecute(String result) {
-            super.onPostExecute(result);
-
-            progressDialog.dismiss();
-            Log.d(TAG, "response  - " + result);
-
-            if (result == null) {
-
-            } else {
-
-                mJsonString = result;
-                showResult();
-            }
-        }
-
-        @Override
         protected String doInBackground(String... params) {
-
             String serverURL = params[0];
 
             try {
@@ -267,23 +196,37 @@ public class owner_Event_Main extends AppCompatActivity implements NavigationVie
                 while ((line = bufferedReader.readLine()) != null) {
                     sb.append(line);
                 }
-
                 bufferedReader.close();
 
                 return sb.toString().trim();
-
             } catch (Exception e) {
-
-                Log.d(TAG, "InsertData: Error ", e);
+                Log.d(TAG, "owner_companyDB_test Error : ", e);
                 errorString = e.toString();
 
                 return null;
             }
-
         }
-    }
 
-    private void showResult() {
+        @Override
+        protected void onPostExecute(String result) {
+            super.onPostExecute(result);
+
+            progressDialog.dismiss();
+            Log.d(TAG, "response  - " + result);
+
+            if (result == null) {
+
+            } else {
+                mJsonString = result;
+                addItemInCategory();
+            }
+        }
+
+    } // EventDB 받는 AsyncTask
+
+    private void addItemInCategory() {
+        my_company = new ArrayList<>();
+
         try {
             JSONObject jsonObject = new JSONObject(mJsonString);
             JSONArray jsonArray = jsonObject.getJSONArray(TAG_JSON);
@@ -299,12 +242,50 @@ public class owner_Event_Main extends AppCompatActivity implements NavigationVie
                 String com_URI = item.getString("com_URI");
                 String id = item.getString("id");
 
+                Log.d(savedID,id);
+
+                if (savedID.equals(id)) { // equals 객체의 내용 자체를 비교하지만 == 연산자는 대상의 주소값을 비교한다
+                    if (com_category.equals("0")) {
+                        my_company.add(new owner_Addstore_Item(com_number, com_name, com_addr,
+                                com_manager, "문화", com_URI, id));
+                    } else if (com_category.equals("1")) {
+                        my_company.add(new owner_Addstore_Item(com_number, com_name, com_addr,
+                                com_manager, "외식", com_URI, id));
+                    } else if (com_category.equals("2")) {
+                        my_company.add(new owner_Addstore_Item(com_number, com_name, com_addr,
+                                com_manager, "뷰티", com_URI, id));
+                    } else if (com_category.equals("3")) {
+                        my_company.add(new owner_Addstore_Item(com_number, com_name, com_addr,
+                                com_manager, "패션", com_URI, id));
+                    }
+                }
+
             }
 
+            com_rAdapter = new owner_Addstore_Adapter(my_company, mContext);
+
+            binding_OwnerMain.eventOwnerMain.setAdapter(com_rAdapter);
+
+            com_rAdapter.notifyDataSetChanged();
 
         } catch (JSONException e) {
-            Log.d(TAG, "showResult : ", e);
+            Log.d(TAG, "addItemInCategory Error : ", e);
         }
+    } // JSON 데이터를 카테고리에 저장
 
+    @Override
+    protected void onDestroy() {
+        if (owner_companyDB_test != null) {
+            owner_companyDB_test.cancel(true);
+        }
+        super.onDestroy();
+    }
+
+    @Override
+    protected void onPause() {
+        if (owner_companyDB_test != null) {
+            owner_companyDB_test.cancel(true);
+        }
+        super.onPause();
     }
 }

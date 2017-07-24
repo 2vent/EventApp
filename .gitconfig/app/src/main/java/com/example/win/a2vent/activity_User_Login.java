@@ -19,6 +19,8 @@ import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
+import static com.example.win.a2vent.user_Event_Adapter.source_URL;
+
 /**
  * Created by EUNJAESHIN on 2017-07-10.
  * 로그인 부분 (첫 액티비티)
@@ -87,7 +89,7 @@ public class activity_User_Login extends AppCompatActivity {
             String id = (String) params[0];
             String pw = (String) params[1];
 
-            String serverURL = "http://192.168.0.106/eventApp/2ventLogin.php";
+            String serverURL = source_URL + "2ventLogin.php";
             String postParameters = "&id=" + id + "&pw=" + pw;
 
             try {

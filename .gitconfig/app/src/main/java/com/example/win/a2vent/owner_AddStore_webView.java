@@ -8,6 +8,8 @@ import android.webkit.JavascriptInterface;
 import android.webkit.WebChromeClient;
 import android.webkit.WebView;
 
+import static com.example.win.a2vent.user_Event_Adapter.source_URL;
+
 public class owner_AddStore_webView extends AppCompatActivity {
     private static final int SERCH_ADDR = 4; //가져온 사진을 자르기 위한 변수
     //주소 검색
@@ -46,7 +48,7 @@ public class owner_AddStore_webView extends AppCompatActivity {
         // web client 를 chrome 으로 설정
         webview.setWebChromeClient(new WebChromeClient());
         // webview url load
-        webview.loadUrl("http://192.168.0.106/eventApp/YTest2.php");
+        webview.loadUrl(source_URL +"YTest2.php");
     }
 
     private class AndroidBridge {

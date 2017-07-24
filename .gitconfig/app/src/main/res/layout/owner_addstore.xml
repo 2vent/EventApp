@@ -114,50 +114,30 @@
                 android:orientation="horizontal">
 
                 <RadioButton
+                    android:id="@+id/com_form_radio_culture"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="문화" />
+
+                <RadioButton
+                    android:id="@+id/com_form_radio_meal"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="외식" />
+
+                <RadioButton
                     android:id="@+id/com_form_radio_beauty"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_alignLeft="@+id/com_form_radio_culture"
-                    android:layout_alignStart="@+id/com_form_radio_culture"
-                    android:layout_below="@+id/com_form_radio_culture"
                     android:layout_weight="1"
-                    android:text="뷰티" />
+                    android:text="문화" />
 
                 <RadioButton
                     android:id="@+id/com_form_radio_fashion"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_below="@+id/com_form_radio_food"
-                    android:layout_toEndOf="@+id/com_form_radio_beauty"
-                    android:layout_toRightOf="@+id/com_form_radio_beauty"
-                    android:layout_weight="1"
-                    android:text="패션" />
-
-                <RadioButton
-                    android:id="@+id/com_form_radio_travel"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_alignLeft="@+id/com_form_radio_beauty"
-                    android:layout_alignStart="@+id/com_form_radio_beauty"
-                    android:layout_below="@+id/com_form_radio_beauty"
-                    android:layout_weight="1"
-                    android:text="여행" />
-
-                <RadioButton
-                    android:id="@+id/com_form_radio_culture"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-
-                    android:layout_weight="1"
-                    android:text="문화" />
-
-                <RadioButton
-                    android:id="@+id/com_form_radio_food"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_alignTop="@+id/com_form_radio_culture"
-                    android:layout_toEndOf="@+id/com_form_radio_culture"
-                    android:layout_toRightOf="@+id/com_form_radio_culture"
                     android:layout_weight="1"
                     android:text="음식" />
             </RadioGroup>

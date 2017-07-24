@@ -27,7 +27,7 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
 
-import static com.example.win.a2vent.user_Event_Adapter.source_URI;
+import static com.example.win.a2vent.user_Event_Adapter.source_URL;
 
 /**
  * Created by EUNJAESHIN on 2017-07-10.
@@ -70,7 +70,7 @@ public class user_Event_Main extends AppCompatActivity {
         mRecyclerView = binding_UserMain.rviewContent1;
 
         getEventDB = new getEventDB();
-        getEventDB.execute(source_URI + "2ventGetEventAll.php"); // AsyncTask 실행
+        getEventDB.execute(source_URL + "2ventGetEventAll.php"); // AsyncTask 실행
     }
 
     public void onClick_Accountinfo(View v) {
