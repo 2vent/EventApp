@@ -9,6 +9,7 @@ import android.location.Geocoder;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
+import android.media.Image;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
@@ -367,8 +368,7 @@ public class user_map extends AppCompatActivity implements MapView.MapViewEventL
         mDefaultMarker.setMapPoint(DEFAULT_MARKER_POINT);
 
         mDefaultMarker.setMarkerType(MapPOIItem.MarkerType.CustomImage);
-
-        mDefaultMarker.setCustomImageResourceId(R.drawable.custom_poi_marker);
+        mDefaultMarker.setCustomImageResourceId(R.drawable.map_pin);
         mDefaultMarker.setCustomImageAutoscale(true);
         mDefaultMarker.setCustomImageAnchor(0.5f, 1.0f);
         mDefaultMarker.setUserObject(event_no);
