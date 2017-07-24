@@ -132,14 +132,14 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="문화" />
+                    android:text="뷰티" />
 
                 <RadioButton
                     android:id="@+id/com_form_radio_fashion"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="음식" />
+                    android:text="패션" />
             </RadioGroup>
 
             <Spinner
