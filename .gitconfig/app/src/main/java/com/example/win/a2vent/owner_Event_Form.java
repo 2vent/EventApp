@@ -60,9 +60,8 @@ import java.util.Calendar;
  * Created by win on 2017-07-10.
  */
 
-public class owner_Event_Form2 extends AppCompatActivity {
+public class owner_Event_Form extends AppCompatActivity {
 
-    String test;
     private final static String TAG = "테스트";
 
     private RelativeLayout rlEventForm;
@@ -112,7 +111,7 @@ public class owner_Event_Form2 extends AppCompatActivity {
                 .detectNetwork()
                 .penaltyLog().build());
 
-        verifyStoragePermissions(owner_Event_Form2.this);
+        verifyStoragePermissions(owner_Event_Form.this);
 
         rlEventForm = (RelativeLayout) findViewById(R.id.rlEventForm);
         rlEventForm.setOnClickListener(new View.OnClickListener() {
@@ -144,7 +143,7 @@ public class owner_Event_Form2 extends AppCompatActivity {
         ArrayList<CharSequence> arrListStore = new ArrayList<>();
         arrListStore.add(0, "AAA");
         arrListStore.add(1, "BBB");
-        ArrayAdapter<CharSequence> arrAdtSpinnerStore = new ArrayAdapter<>(owner_Event_Form2.this, R.layout.support_simple_spinner_dropdown_item, arrListStore);
+        ArrayAdapter<CharSequence> arrAdtSpinnerStore = new ArrayAdapter<>(owner_Event_Form.this, R.layout.support_simple_spinner_dropdown_item, arrListStore);
         spinStore = (Spinner) findViewById(R.id.spinStore);
         spinStore.setAdapter(arrAdtSpinnerStore);
         spinStore.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
@@ -237,22 +236,22 @@ public class owner_Event_Form2 extends AppCompatActivity {
             public void onCheckedChanged(RadioGroup group, @IdRes int checkedId) {
                 switch (checkedId) {
                     case R.id.rbMale:
-                        Toast.makeText(owner_Event_Form2.this, rbMale.getText().toString(), Toast.LENGTH_SHORT).show();
+                        Toast.makeText(owner_Event_Form.this, rbMale.getText().toString(), Toast.LENGTH_SHORT).show();
                         strSex = "1";
                         break;
                     case R.id.rbFemale:
-                        Toast.makeText(owner_Event_Form2.this, rbFemale.getText().toString(), Toast.LENGTH_SHORT).show();
+                        Toast.makeText(owner_Event_Form.this, rbFemale.getText().toString(), Toast.LENGTH_SHORT).show();
                         strSex = "0";
                         break;
                     case R.id.rbAllSex:
-                        Toast.makeText(owner_Event_Form2.this, rbAllSex.getText().toString(), Toast.LENGTH_SHORT).show();
+                        Toast.makeText(owner_Event_Form.this, rbAllSex.getText().toString(), Toast.LENGTH_SHORT).show();
                         strSex = "2";
                         break;
                 }
             }
         });
 
-        ArrayAdapter<CharSequence> arrAdtLocations = ArrayAdapter.createFromResource(owner_Event_Form2.this, R.array.locations, R.layout.support_simple_spinner_dropdown_item);
+        ArrayAdapter<CharSequence> arrAdtLocations = ArrayAdapter.createFromResource(owner_Event_Form.this, R.array.locations, R.layout.support_simple_spinner_dropdown_item);
         spinLocation = (Spinner) findViewById(R.id.spinLocation);
         spinLocation.setAdapter(arrAdtLocations);
         spinLocation.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
@@ -295,7 +294,7 @@ public class owner_Event_Form2 extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-        Toast toast = Toast.makeText(owner_Event_Form2.this, "'뒤로' 버튼을 한버 더 누르시면 종료됩니다", Toast.LENGTH_SHORT);
+        Toast toast = Toast.makeText(owner_Event_Form.this, "'뒤로' 버튼을 한버 더 누르시면 종료됩니다", Toast.LENGTH_SHORT);
 
         if (System.currentTimeMillis() > backKeyPressedTime + 2000) {
             backKeyPressedTime = System.currentTimeMillis();
@@ -436,7 +435,7 @@ public class owner_Event_Form2 extends AppCompatActivity {
 
     private void input(String msg, String stats) {
         if (msg != null) {
-            Toast.makeText(owner_Event_Form2.this, msg, Toast.LENGTH_SHORT).show();
+            Toast.makeText(owner_Event_Form.this, msg, Toast.LENGTH_SHORT).show();
         } else {
             String _name = etEventName.getText().toString();
             String _type = strType;
@@ -665,7 +664,7 @@ public class owner_Event_Form2 extends AppCompatActivity {
         protected void onPreExecute() {
             super.onPreExecute();
 
-            progressDialog = ProgressDialog.show(owner_Event_Form2.this, "Please Wait", null, true, true);
+            progressDialog = ProgressDialog.show(owner_Event_Form.this, "Please Wait", null, true, true);
         }
 
         @Override
