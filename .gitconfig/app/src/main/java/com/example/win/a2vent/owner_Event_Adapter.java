@@ -13,8 +13,6 @@ import java.util.ArrayList;
 
 public class owner_Event_Adapter extends RecyclerView.Adapter<owner_Event_Holder> {
 
-    String test;
-
     private ArrayList<owner_Event_Item> event_list=new ArrayList<owner_Event_Item>();
 
     public owner_Event_Adapter(ArrayList<owner_Event_Item> mevent_list){
@@ -37,9 +35,6 @@ public class owner_Event_Adapter extends RecyclerView.Adapter<owner_Event_Holder
         holder.event_price.setText(String.valueOf(event_list.get(position).event_price));
         holder.event_dis_price.setText(String.valueOf(event_list.get(position).getEvent_dis_price()));
         holder.event_day.setText("동구");
-//        holder.event_time.setText("동구");
-//        holder.event_main);
-
     }
 
     @Override
