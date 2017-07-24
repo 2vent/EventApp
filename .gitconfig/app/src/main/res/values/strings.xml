@@ -1,0 +1,13 @@
+<resources>
+
+
+    <string name="app_name">2VENT</string>
+    <string name="navigation_drawer_open" />
+    <string name="navigation_drawer_close" />
+
+    <string name="str_done">완료</string>
+
+    <!--<string name="app_name">2vent</string>-->
+    <string name="title_activity_event_user_main">event_user_main</string>
+
+</resources>
