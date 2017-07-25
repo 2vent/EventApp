@@ -5,6 +5,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.provider.Settings;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
@@ -139,7 +140,7 @@ public class user_iteminfo extends AppCompatActivity {
             try {
 
 
-                URL url = new URL("http://192.168.0.106/EventApp/2ventGetEventOnItemInfo.php");
+                URL url = new URL(GlobalData.getURL() + "2ventGetEventOnItemInfo.php");
                 HttpURLConnection httpURLConnection = (HttpURLConnection) url.openConnection();
                 httpURLConnection.setRequestMethod("POST");
 
@@ -249,7 +250,7 @@ public class user_iteminfo extends AppCompatActivity {
             try {
 
 
-                URL url = new URL("http://192.168.0.106/EventApp/php1.php");
+                URL url = new URL(GlobalData.getURL() + "php1.php");
                 HttpURLConnection httpURLConnection = (HttpURLConnection) url.openConnection();
                 httpURLConnection.setRequestMethod("POST");
 
@@ -349,7 +350,7 @@ public class user_iteminfo extends AppCompatActivity {
             Log.d("echo", s);
             if (s.equals("응모 성공")) {
                 Toast.makeText(user_iteminfo.this, "응모 완료", Toast.LENGTH_SHORT).show();
-            } else if (s.equals("이미 응모함")){
+            } else if (s.equals("이미 응모함")) {
                 Toast.makeText(user_iteminfo.this, "이미 응모한 이벤트입니다", Toast.LENGTH_SHORT).show();
             } else {
                 Toast.makeText(user_iteminfo.this, "응모 실패", Toast.LENGTH_SHORT).show();

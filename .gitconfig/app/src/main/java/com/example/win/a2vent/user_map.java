@@ -88,6 +88,7 @@ public class user_map extends AppCompatActivity implements MapView.MapViewEventL
             public void onPermissionGranted() {
 
             }
+
             @Override
             public void onPermissionDenied(ArrayList<String> deniedPermissions) {
                 Toast.makeText(user_map.this, "Permission Denied\n" + deniedPermissions.toString(), Toast.LENGTH_SHORT).show();
@@ -294,9 +295,7 @@ public class user_map extends AppCompatActivity implements MapView.MapViewEventL
             InputStream inputStream = null;
             StringBuilder sb = null;
             try {
-
-
-                URL url = new URL("http://192.168.0.106/EventApp/2ventGetEventOnMap.php");
+                URL url = new URL(GlobalData.getURL() + "2ventGetEventOnMap.php");
                 HttpURLConnection httpURLConnection = (HttpURLConnection) url.openConnection();
                 httpURLConnection.setRequestMethod("POST");
 
@@ -356,7 +355,6 @@ public class user_map extends AppCompatActivity implements MapView.MapViewEventL
         } catch (IOException e) {
             e.printStackTrace();
         }
-
         latitude = list.get(0).getLatitude();
         longitude = list.get(0).getLongitude();
 
@@ -377,13 +375,10 @@ public class user_map extends AppCompatActivity implements MapView.MapViewEventL
         if (distanceCheck(latitude, longitude) < 2000) {
             mapView.addPOIItem(mDefaultMarker);
         }
-        ;
 
 
 //        mapView.selectPOIItem(mDefaultMarker, true);
 //        mapView.setMapCenterPoint(DEFAULT_MARKER_POINT, false);
-
-
     }
 
     // json 객체 값 추출
@@ -391,11 +386,9 @@ public class user_map extends AppCompatActivity implements MapView.MapViewEventL
         JSONObject jsonObject = null;
         try {
             jsonObject = new JSONObject(s);
-
             JSONArray jsonArray = jsonObject.getJSONArray("eventInfo");
 
             for (int i = 0; i < jsonArray.length(); i++) {
-
                 JSONObject item = jsonArray.getJSONObject(i);
 
                 String com_addr = item.getString("com_addr");
@@ -403,8 +396,6 @@ public class user_map extends AppCompatActivity implements MapView.MapViewEventL
                 int event_no = item.getInt("event_number");
                 Log.i("가게이름", com_name);
                 makeMarker(com_addr, com_name, mapView, event_no);
-
-
             }
             mapView.fitMapViewAreaToShowAllPOIItems();   //추가된 마커가 모두보이게 조절
         } catch (JSONException e) {
@@ -417,11 +408,9 @@ public class user_map extends AppCompatActivity implements MapView.MapViewEventL
         JSONObject jsonObject = null;
         try {
             jsonObject = data;
-
             JSONArray jsonArray = jsonObject.getJSONArray("eventInfo");
 
             for (int i = 0; i < jsonArray.length(); i++) {
-
                 JSONObject item = jsonArray.getJSONObject(i);
 
                 if (event_number == item.getInt("event_number")) {
@@ -433,11 +422,7 @@ public class user_map extends AppCompatActivity implements MapView.MapViewEventL
                     tv_discount.setText(discount);
                     LoadImage loadImage = new LoadImage();
                     loadImage.execute(imageURI);
-
-
                 }
-
-
             }
         } catch (JSONException e) {
             e.printStackTrace();
@@ -448,7 +433,6 @@ public class user_map extends AppCompatActivity implements MapView.MapViewEventL
     private class LoadImage extends AsyncTask<String, String, Bitmap> {
         Bitmap mBitmap;
 
-
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
@@ -457,8 +441,6 @@ public class user_map extends AppCompatActivity implements MapView.MapViewEventL
         protected Bitmap doInBackground(String... args) {
             InputStream inputStream = null;
             try {
-
-
                 URL url = new URL("http://192.168.0.106/EventApp/php1.php");
                 HttpURLConnection httpURLConnection = (HttpURLConnection) url.openConnection();
                 httpURLConnection.setRequestMethod("POST");
@@ -476,10 +458,8 @@ public class user_map extends AppCompatActivity implements MapView.MapViewEventL
 
                 httpURLConnection.connect();
 
-
                 mBitmap = BitmapFactory
                         .decodeStream(httpURLConnection.getInputStream());
-
 
             } catch (MalformedURLException e) {
                 e.printStackTrace();
@@ -490,17 +470,11 @@ public class user_map extends AppCompatActivity implements MapView.MapViewEventL
         }
 
         protected void onPostExecute(Bitmap image) {
-
             if (image != null) {
-
                 iv_image.setImageBitmap(image);
 
-
             }
-
-
         }
-
 
     }
 
@@ -515,23 +489,18 @@ public class user_map extends AppCompatActivity implements MapView.MapViewEventL
                 myLatitude = location.getLatitude();   //위도
                 Log.i("mylati", String.valueOf(myLatitude));
                 Log.i("mylongi", String.valueOf(myLongitude));
-
             }
-
 
             @Override
             public void onStatusChanged(String provider, int status, Bundle extras) {
-
             }
 
             @Override
             public void onProviderEnabled(String provider) {
-
             }
 
             @Override
             public void onProviderDisabled(String provider) {
-
             }
         };
     }
@@ -542,23 +511,18 @@ public class user_map extends AppCompatActivity implements MapView.MapViewEventL
         Log.i("좌표", mapPoint.getMapPointGeoCoord().latitude + " " + mapPoint.getMapPointGeoCoord().longitude);
         myLatitude = mapPoint.getMapPointGeoCoord().latitude;
         myLongitude = mapPoint.getMapPointGeoCoord().longitude;
-
     }
 
     @Override
     public void onCurrentLocationDeviceHeadingUpdate(MapView mapView, float v) {
-
     }
 
     @Override
     public void onCurrentLocationUpdateFailed(MapView mapView) {
-
     }
 
     @Override
     public void onCurrentLocationUpdateCancelled(MapView mapView) {
-
-
     }
 
     //현재 자기 위치와 매장과의 거리 계산
@@ -572,8 +536,6 @@ public class user_map extends AppCompatActivity implements MapView.MapViewEventL
         LatLng from = new LatLng(latitude, longitude);
 
         return SphericalUtil.computeDistanceBetween(to, from);
-
-
     }
 
     @Override
@@ -591,6 +553,5 @@ public class user_map extends AppCompatActivity implements MapView.MapViewEventL
         }
         super.onPause();
     }
-
 
 }

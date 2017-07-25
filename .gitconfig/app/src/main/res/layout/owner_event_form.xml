@@ -474,7 +474,6 @@
                 android:layout_below="@id/tvEndTime"
                 android:layout_marginTop="40dp"
                 android:lines="1"
-                android:maxLines="1"
                 android:singleLine="true"
                 android:text="이벤트 명" />
 
