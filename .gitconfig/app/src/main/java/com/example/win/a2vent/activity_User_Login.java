@@ -19,7 +19,6 @@ import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
-import static com.example.win.a2vent.user_Event_Adapter.source_URL;
 
 /**
  * Created by EUNJAESHIN on 2017-07-10.
@@ -89,7 +88,7 @@ public class activity_User_Login extends AppCompatActivity {
             String id = (String) params[0];
             String pw = (String) params[1];
 
-            String serverURL = source_URL + "2ventLogin.php";
+            String serverURL = GlobalData.getURL() + "2ventLogin.php";
             String postParameters = "&id=" + id + "&pw=" + pw;
 
             try {
@@ -150,10 +149,12 @@ public class activity_User_Login extends AppCompatActivity {
                 Toast.makeText(activity_User_Login.this, "Account Error", Toast.LENGTH_SHORT).show();
             } else if (result.equals("1")) {
                 savedID = binding_userLogin.eTextLoginId.getText().toString();
+                GlobalData.setLogin_ID(savedID);
                 Intent intent_userLogin = new Intent(activity_User_Login.this, user_Event_Main.class);
                 startActivity(intent_userLogin);
             } else if (result.equals("2")) {
                 savedID = binding_userLogin.eTextLoginId.getText().toString();
+                GlobalData.setLogin_ID(savedID);
                 Intent intent_managerLogin = new Intent(activity_User_Login.this, owner_Event_Main.class);
                 startActivity(intent_managerLogin);
             } else {

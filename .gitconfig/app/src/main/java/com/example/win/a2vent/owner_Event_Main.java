@@ -39,7 +39,6 @@ import java.util.HashMap;
 
 import static android.content.ContentValues.TAG;
 import static com.example.win.a2vent.activity_User_Login.savedID;
-import static com.example.win.a2vent.user_Event_Adapter.source_URL;
 
 /**
  * Created by win on 2017-07-06.
@@ -98,7 +97,7 @@ public class owner_Event_Main extends AppCompatActivity implements NavigationVie
             @Override
             public void onClick(View view) {
                 if (nType == 1) {
-                    Intent intent_eventform = new Intent(getBaseContext(), owner_Event_Addevent.class);
+                    Intent intent_eventform = new Intent(getBaseContext(), owner_Event_Form.class);
                     startActivity(intent_eventform);
                 } else if (nType == 0) {
                     Intent intent_addstore = new Intent(getBaseContext(), owner_AddStore.class);
@@ -135,7 +134,7 @@ public class owner_Event_Main extends AppCompatActivity implements NavigationVie
         if (id == R.id.my_company) {
             nType = 0;
             owner_companyDB_test = new owner_companyDB_test();
-            owner_companyDB_test.execute(source_URL + "2ventGetCompany.php");
+            owner_companyDB_test.execute(GlobalData.getURL() + "2ventGetCompany.php");
 
         } else if (id == R.id.on_event) {
             nType = 1;

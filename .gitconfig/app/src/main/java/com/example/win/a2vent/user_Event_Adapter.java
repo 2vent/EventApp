@@ -32,7 +32,6 @@ public class user_Event_Adapter extends RecyclerView.Adapter<user_Event_Holder> 
     private Context context;
     private ArrayList<user_Event_Item> mItems = new ArrayList<user_Event_Item>();
     private int lastPosition = -1;
-    public static String source_URL = "http://121.151.63.53:8080/eventApp/"; // URI 경로
 
     public user_Event_Adapter(ArrayList items, Context mContext) {
         mItems = items;
@@ -51,7 +50,7 @@ public class user_Event_Adapter extends RecyclerView.Adapter<user_Event_Holder> 
     @Override
     public void onBindViewHolder(user_Event_Holder holder, int position) {
 //        피카소 라이브러리 적용
-        Picasso.with(context).load(source_URL + mItems.get(position).event_URI)
+        Picasso.with(context).load(GlobalData.getURL()+ mItems.get(position).event_URI)
                 .placeholder(R.drawable.event_default).into(holder.imageView);
 
         holder.textView1.setText(mItems.get(position).event_name);

@@ -17,7 +17,6 @@ import android.support.annotation.IdRes;
 import android.support.v4.content.FileProvider;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
-import android.util.Xml;
 import android.view.View;
 import android.webkit.WebView;
 import android.widget.AdapterView;
@@ -45,7 +44,6 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
-import java.io.UTFDataFormatException;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URI;
@@ -54,8 +52,6 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-
-import static com.example.win.a2vent.user_Event_Adapter.source_URL;
 
 public class owner_AddStore extends AppCompatActivity implements View.OnClickListener {
 
@@ -75,6 +71,7 @@ public class owner_AddStore extends AppCompatActivity implements View.OnClickLis
     Button btn_search_addr;
     TextView v_com_addr2;
 
+
     String com_name = null;
     String com_addr = null;
     String com_category;
@@ -90,6 +87,7 @@ public class owner_AddStore extends AppCompatActivity implements View.OnClickLis
     WebView webview;
     private Handler handler;
 
+
     //사진 관련
     Button btn_gall;
     Button btn_picture;
@@ -97,7 +95,6 @@ public class owner_AddStore extends AppCompatActivity implements View.OnClickLis
     String file_name;
     String file_dir;
     String[] city = null;
-
     private static final int PICK_FROM_CAMERA = 1; //카메라 촬영으로 사진 가져오기
     private static final int PICK_FROM_ALBUM = 2; //앨범에서 사진 가져오기
     private static final int CROP_FROM_CAMERA = 3; //가져온 사진을 자르기 위한 변수
@@ -116,6 +113,7 @@ public class owner_AddStore extends AppCompatActivity implements View.OnClickLis
         v_com_radio_food = (RadioButton) findViewById(R.id.com_form_radio_meal);
         v_com_radio_beauty = (RadioButton) findViewById(R.id.com_form_radio_beauty);
         v_com_radio_fashion = (RadioButton) findViewById(R.id.com_form_radio_fashion);
+        v_com_radio_travel = (RadioButton) findViewById(R.id.com_form_radio_meal);
         v_com_manager = (Spinner) findViewById(R.id.com_form_manager);
         v_com_number = (TextView) findViewById(R.id.com_form_number);
         v_com_radio = (RadioGroup) findViewById(R.id.com_form_radio);
@@ -158,18 +156,19 @@ public class owner_AddStore extends AppCompatActivity implements View.OnClickLis
                 goToAlbum();
             }
         });
+
         btn_picture.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 takePhoto();
             }
         });
+
         btn_search_addr.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent i = new Intent(owner_AddStore.this, owner_AddStore_webView.class);
                 startActivityForResult(i, SEARCH_ADDR);
-
 //                // WebView 초기화
 //                init_webView();
 //
@@ -262,7 +261,7 @@ public class owner_AddStore extends AppCompatActivity implements View.OnClickLis
                     Log.e("맞나?", com_addr);
 
 
-                    ID = "1";
+                    ID = GlobalData.getLogin_ID();
                     com_manager = v_com_manager.getSelectedItem().toString();
                     com_URI = file_name;
 
@@ -315,15 +314,14 @@ public class owner_AddStore extends AppCompatActivity implements View.OnClickLis
             String uploadFileName = file_name;
             File sourceFile = new File(sourceFileUri);
 
+            String boundary = "^******^";
             DataOutputStream dos = null;
-            String lineEnd = "\r\n";
-            String twoHyphens = "--";
-            String boundary = "*****";
+            String delimiter = "\r\n--" + boundary + "\r\n";
             int bytesRead, bytesAvailable, bufferSize;
             int maxBufferSize = 1 * 1024 * 1024;
             byte[] buffer;
 
-            String serverURL = source_URL + "YTest.php";
+            String serverURL = GlobalData.getURL() + "YTest.php";
             String postParameters = "&com_number=" + com_number + "&com_name=" + com_name
                     + "&com_addr=" + com_addr + "&com_category=" + com_category
                     + "&com_manager=" + com_manager + "&com_URI=" + com_URI + "&id=" + id;
@@ -338,62 +336,37 @@ public class owner_AddStore extends AppCompatActivity implements View.OnClickLis
                 httpURLConnection.setReadTimeout(5000);
                 httpURLConnection.setConnectTimeout(5000);
                 httpURLConnection.setRequestMethod("POST");
-//                httpURLConnection.setRequestProperty("content-type", "application/json");
-//                httpURLConnection.setDoInput(true);
                 httpURLConnection.setDoInput(true); // Allow Inputs
                 httpURLConnection.setDoOutput(true); // Allow Outputs
                 httpURLConnection.setUseCaches(false); // Don't use a Cached Copy
                 httpURLConnection.setRequestMethod("POST");
                 httpURLConnection.setRequestProperty("Connection", "Keep-Alive");
-                httpURLConnection.setRequestProperty("ENCTYPE", "multipart/form-data");
                 httpURLConnection.setRequestProperty("Content-Type", "multipart/form-data;boundary=" + boundary);
-                httpURLConnection.setRequestProperty("uploaded_file", fileName);
 
-                httpURLConnection.connect();
+                StringBuffer postDataBuilder = new StringBuffer();
 
-
-//                OutputStream outputStream = httpURLConnection.getOutputStream();
-//                outputStream.write(postParameters.getBytes("UTF-8"));
+                postDataBuilder.append(delimiter);
+                postDataBuilder.append(setValue("com_number", com_number));
+                postDataBuilder.append(delimiter);
+                postDataBuilder.append(setValue("com_name", com_name));
+                postDataBuilder.append(delimiter);
+                postDataBuilder.append(setValue("com_addr", com_addr));
+                postDataBuilder.append(delimiter);
+                postDataBuilder.append(setValue("com_category", com_category));
+                postDataBuilder.append(delimiter);
+                postDataBuilder.append(setValue("com_manager", com_manager));
+                postDataBuilder.append(delimiter);
+                postDataBuilder.append(setValue("com_URI", com_URI));
+                postDataBuilder.append(delimiter);
+                postDataBuilder.append(setValue("id", id));
+                postDataBuilder.append(delimiter);
 
                 dos = new DataOutputStream(httpURLConnection.getOutputStream());
 
-                //send string data
-                dos.writeBytes(twoHyphens + boundary + lineEnd);
-                dos.writeBytes("Content-Disposition: form-data; name=\"com_number\"\r\n\r\n" + com_number);
-                dos.writeBytes(lineEnd);
-                dos.writeBytes(twoHyphens + boundary + lineEnd);
+                postDataBuilder.append(setFile("uploaded_file", fileName));
+                postDataBuilder.append("\r\n");
 
-                dos.writeBytes("Content-Disposition: form-data; name=\"com_name\"\r\n\r\n" + com_name);
-                dos.writeBytes(lineEnd);
-                dos.writeBytes(twoHyphens + boundary + lineEnd);
-
-                dos.writeBytes("Content-Disposition: form-data; name=\"com_addr\"\r\n\r\n" + com_addr);
-                dos.writeBytes(lineEnd);
-                dos.writeBytes(twoHyphens + boundary + lineEnd);
-
-                dos.writeBytes("Content-Disposition: form-data; name=\"com_category\"\r\n\r\n" + com_category);
-                dos.writeBytes(lineEnd);
-                dos.writeBytes(twoHyphens + boundary + lineEnd);
-
-                dos.writeBytes("Content-Disposition: form-data; name=\"com_manager\"\r\n\r\n" + com_manager);
-                dos.writeBytes(lineEnd);
-                dos.writeBytes(twoHyphens + boundary + lineEnd);
-
-                dos.writeBytes("Content-Disposition: form-data; name=\"com_URI\"\r\n\r\n" + com_URI);
-                dos.writeBytes(lineEnd);
-                dos.writeBytes(twoHyphens + boundary + lineEnd);
-
-                dos.writeBytes("Content-Disposition: form-data; name=\"id\"\r\n\r\n" + id);
-
-                dos.writeBytes(lineEnd);
-
-
-                //send image
-                dos.writeBytes(twoHyphens + boundary + lineEnd);
-                dos.writeBytes("Content-Disposition: form-data; name=\"uploaded_file\";filename=\""
-                        + fileName + "\"" + lineEnd);
-
-                dos.writeBytes(lineEnd);
+                dos.writeUTF(postDataBuilder.toString());
 
                 // create a buffer of  maximum size
                 bytesAvailable = fileInputStream.available();
@@ -414,8 +387,10 @@ public class owner_AddStore extends AppCompatActivity implements View.OnClickLis
                 }
 
                 // send multipart form data necesssary after file data...
-                dos.writeBytes(lineEnd);
-                dos.writeBytes(twoHyphens + boundary + twoHyphens + lineEnd);
+                dos.writeBytes(delimiter);
+                dos.flush();
+                dos.close();
+                fileInputStream.close();
 
 
 //                outputStream.flush();
@@ -462,6 +437,13 @@ public class owner_AddStore extends AppCompatActivity implements View.OnClickLis
             Log.d("DB", "POST response  - " + result);
         }
 
+        public String setValue(String key, String value) {
+            return "Content-Disposition: form-data; name=\"" + key + "\"\r\n\r\n" + value;
+        }
+
+        public String setFile(String key, String fileName) {
+            return "Content-Disposition: form-data; name=\"" + key + "\";filename=\"" + fileName + "\"\r\n";
+        }
     }
 
     private void takePhoto() {
@@ -550,10 +532,13 @@ public class owner_AddStore extends AppCompatActivity implements View.OnClickLis
 
             }
         } else if (requestCode == SEARCH_ADDR) {
-            v_com_addr.setText(data.getStringExtra("addr"));
-            String test = data.getStringExtra("addr");
-            Log.e("맞나?", test);
-
+            try {
+                v_com_addr.setText(data.getStringExtra("addr"));
+                String test = data.getStringExtra("addr");
+                Log.e("맞나?", test);
+            } catch (NullPointerException e) {
+                e.printStackTrace();
+            }
 
         }
 
@@ -632,7 +617,7 @@ public class owner_AddStore extends AppCompatActivity implements View.OnClickLis
             try {
 
 
-                URL url = new URL(source_URL + "2ventAddstoreGetManager.php");
+                URL url = new URL(GlobalData.getURL() + "2ventAddstoreGetManager.php");
                 HttpURLConnection httpURLConnection = (HttpURLConnection) url.openConnection();
                 httpURLConnection.setRequestMethod("POST");
 
@@ -699,7 +684,6 @@ public class owner_AddStore extends AppCompatActivity implements View.OnClickLis
                 Log.e("item", item.toString());
 
             }
-
         } catch (JSONException e) {
             e.printStackTrace();
         }

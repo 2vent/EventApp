@@ -8,8 +8,7 @@
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="0dip"
-        android:layout_weight="85"
-        >
+        android:layout_weight="85">
 
         <RelativeLayout
             android:id="@+id/rlEventForm"
@@ -89,8 +88,8 @@
                 android:layout_alignLeft="@id/spinStore"
                 android:ems="10"
                 android:inputType="number"
-                android:textAlignment="center"
-                android:nextFocusDown="@+id/etDiscount" />
+                android:nextFocusDown="@+id/etDiscount"
+                android:textAlignment="center" />
 
             <TextView
                 android:layout_width="wrap_content"
@@ -116,8 +115,8 @@
                 android:layout_alignLeft="@id/etFixedPrice"
                 android:ems="10"
                 android:inputType="number"
-                android:textAlignment="center"
-                android:nextFocusDown="@+id/etLimitPersons"/>
+                android:nextFocusDown="@+id/etLimitPersons"
+                android:textAlignment="center" />
 
             <TextView
                 android:layout_width="wrap_content"
@@ -191,8 +190,8 @@
                 android:layout_alignLeft="@id/etDiscount"
                 android:ems="10"
                 android:inputType="number"
-                android:textAlignment="center"
-                android:nextFocusDown="@+id/etStartDateYear"/>
+                android:nextFocusDown="@+id/etStartDateYear"
+                android:textAlignment="center" />
 
             <TextView
                 android:layout_width="wrap_content"
@@ -225,8 +224,8 @@
                     android:ems="4"
                     android:inputType="number"
                     android:maxLength="4"
-                    android:textAlignment="center"
-                    android:nextFocusDown="@+id/etStartDateMonth"/>
+                    android:nextFocusDown="@+id/etStartDateMonth"
+                    android:textAlignment="center" />
 
                 <TextView
                     android:id="@+id/tvStartDateYear"
@@ -244,10 +243,10 @@
                     android:layout_alignBaseline="@id/tvStartDateYear"
                     android:layout_toRightOf="@id/tvStartDateYear"
                     android:ems="2"
-                    android:maxLength="2"
                     android:inputType="number"
-                    android:textAlignment="center"
-                    android:nextFocusDown="@+id/etStartDateDay"/>
+                    android:maxLength="2"
+                    android:nextFocusDown="@+id/etStartDateDay"
+                    android:textAlignment="center" />
 
                 <TextView
                     android:id="@+id/tvStartDateMonth"
@@ -267,8 +266,8 @@
                     android:ems="2"
                     android:inputType="number"
                     android:maxLength="2"
-                    android:textAlignment="center"
-                    android:nextFocusDown="@+id/etStartHour"/>
+                    android:nextFocusDown="@+id/etStartHour"
+                    android:textAlignment="center" />
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -302,8 +301,8 @@
                     android:ems="4"
                     android:inputType="number"
                     android:maxLength="2"
-                    android:textAlignment="center"
-                    android:nextFocusDown="@+id/etStartMin"/>
+                    android:nextFocusDown="@+id/etStartMin"
+                    android:textAlignment="center" />
 
                 <TextView
                     android:id="@+id/tvStartHour"
@@ -321,10 +320,10 @@
                     android:layout_alignBaseline="@id/tvStartHour"
                     android:layout_toRightOf="@id/tvStartHour"
                     android:ems="4"
-                    android:maxLength="2"
                     android:inputType="number"
-                    android:textAlignment="center"
-                    android:nextFocusDown="@+id/etEndDateYear"/>
+                    android:maxLength="2"
+                    android:nextFocusDown="@+id/etEndDateYear"
+                    android:textAlignment="center" />
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -356,10 +355,10 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:ems="4"
-                    android:maxLength="4"
                     android:inputType="number"
-                    android:textAlignment="center"
-                    android:nextFocusDown="@+id/etEndDateMonth"/>
+                    android:maxLength="4"
+                    android:nextFocusDown="@+id/etEndDateMonth"
+                    android:textAlignment="center" />
 
                 <TextView
                     android:id="@+id/tvEndDateYear"
@@ -377,10 +376,10 @@
                     android:layout_alignBaseline="@id/tvEndDateYear"
                     android:layout_toRightOf="@id/tvEndDateYear"
                     android:ems="2"
-                    android:maxLength="2"
                     android:inputType="number"
-                    android:textAlignment="center"
-                    android:nextFocusDown="@+id/etEndDateDay"/>
+                    android:maxLength="2"
+                    android:nextFocusDown="@+id/etEndDateDay"
+                    android:textAlignment="center" />
 
                 <TextView
                     android:id="@+id/tvEndDateMonth"
@@ -398,10 +397,10 @@
                     android:layout_alignBaseline="@id/tvEndDateMonth"
                     android:layout_toRightOf="@id/tvEndDateMonth"
                     android:ems="2"
-                    android:maxLength="2"
                     android:inputType="number"
-                    android:textAlignment="center"
-                    android:nextFocusDown="@+id/etEndHour"/>
+                    android:maxLength="2"
+                    android:nextFocusDown="@+id/etEndHour"
+                    android:textAlignment="center" />
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -433,10 +432,10 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:ems="4"
-                    android:maxLength="2"
                     android:inputType="number"
-                    android:textAlignment="center"
-                    android:nextFocusDown="@+id/etEndMin"/>
+                    android:maxLength="2"
+                    android:nextFocusDown="@+id/etEndMin"
+                    android:textAlignment="center" />
 
                 <TextView
                     android:id="@+id/tvEndHour"
@@ -454,10 +453,10 @@
                     android:layout_alignBaseline="@id/tvEndHour"
                     android:layout_toRightOf="@id/tvEndHour"
                     android:ems="4"
-                    android:maxLength="2"
                     android:inputType="number"
-                    android:textAlignment="center"
-                    android:nextFocusDown="@+id/etEventName"/>
+                    android:maxLength="2"
+                    android:nextFocusDown="@+id/etEventName"
+                    android:textAlignment="center" />
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -474,6 +473,9 @@
                 android:layout_alignLeft="@id/tvEndTime"
                 android:layout_below="@id/tvEndTime"
                 android:layout_marginTop="40dp"
+                android:lines="1"
+                android:maxLines="1"
+                android:singleLine="true"
                 android:text="이벤트 명" />
 
             <EditText
@@ -483,8 +485,8 @@
                 android:layout_alignBaseline="@id/tvEventName"
                 android:layout_alignLeft="@id/rlEndTime"
                 android:ems="10"
-                android:textAlignment="center"
-                android:nextFocusDown="@+id/etMinimumAge"/>
+                android:nextFocusDown="@+id/etMinimumAge"
+                android:textAlignment="center" />
 
             <TextView
                 android:id="@+id/tvContents"
@@ -536,12 +538,12 @@
                 android:layout_alignBaseline="@id/tvAge"
                 android:layout_alignLeft="@id/swConditions"
                 android:ems="4"
-                android:maxLength="2"
                 android:enabled="false"
                 android:inputType="number"
+                android:maxLength="2"
+                android:nextFocusDown="@+id/etMaximumAge"
                 android:textAlignment="center"
-                android:textColor="#FFCCCCCC"
-                android:nextFocusDown="@+id/etMaximumAge"/>
+                android:textColor="#FFCCCCCC" />
 
             <TextView
                 android:id="@+id/tvAge1"
@@ -559,9 +561,9 @@
                 android:layout_alignBaseline="@id/tvAge1"
                 android:layout_toRightOf="@id/tvAge1"
                 android:ems="4"
-                android:maxLength="2"
                 android:enabled="false"
                 android:inputType="number"
+                android:maxLength="2"
                 android:textAlignment="center"
                 android:textColor="#FFCCCCCC" />
 
@@ -605,9 +607,9 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="20dp"
+                    android:checked="true"
                     android:enabled="false"
                     android:text="모두"
-                    android:checked="true"
                     android:textColor="#FFCCCCCC" />
             </RadioGroup>
 
@@ -650,8 +652,8 @@
                     android:id="@+id/rbCashPayment"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="현금"
-                    android:checked="true"/>
+                    android:checked="true"
+                    android:text="현금" />
 
                 <RadioButton
                     android:id="@+id/rbCardPayment"
@@ -662,7 +664,6 @@
             </RadioGroup>
 
 
-
         </RelativeLayout>
     </ScrollView>
 
@@ -670,6 +671,7 @@
         android:layout_width="wrap_content"
         android:layout_height="0dip"
         android:layout_weight="15">
+
         <Button
             android:id="@+id/btnAddSubmit"
             android:layout_width="wrap_content"
@@ -680,8 +682,7 @@
             android:layout_marginRight="10dp"
             android:layout_marginTop="10dp"
             android:text="등록"
-            android:textAlignment="center"
-            />
+            android:textAlignment="center" />
 
         <Button
             android:id="@+id/btnAddTemp"

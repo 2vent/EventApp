@@ -6,8 +6,6 @@ import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 
-import static com.example.win.a2vent.user_Event_Adapter.source_URL;
-
 /**
  * Created by Administrator on 2017-07-13.
  */
@@ -26,7 +24,7 @@ public class user_payment extends AppCompatActivity {
         webSettings = webView.getSettings();
 
         webSettings.setJavaScriptEnabled(true);
-        webView.loadUrl(source_URL + "paytest.php");
+        webView.loadUrl(GlobalData.getURL() + "paytest.php");
 
 
     }

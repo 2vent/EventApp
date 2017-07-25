@@ -2,7 +2,6 @@ package com.example.win.a2vent;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,8 +10,6 @@ import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 
-import static android.content.ContentValues.TAG;
-import static com.example.win.a2vent.user_Event_Adapter.source_URL;
 
 /**
  * Created by win on 2017-07-03.
@@ -41,7 +38,7 @@ public class owner_Addstore_Adapter extends RecyclerView.Adapter<owner_Addstore_
 
     @Override
     public void onBindViewHolder(owner_Addstore_Holder holder, int position) {
-        Picasso.with(context).load(source_URL + mItems.get(position).com_URI)
+        Picasso.with(context).load(GlobalData.getURL() + mItems.get(position).com_URI)
                 .placeholder(R.drawable.store_default).into(holder.com_imageView);
         holder.com_addr.setText(mItems.get(position).com_addr);
         holder.com_name.setText(mItems.get(position).com_name);

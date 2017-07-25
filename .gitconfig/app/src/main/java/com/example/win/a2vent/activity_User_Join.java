@@ -21,7 +21,6 @@ import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
-import static com.example.win.a2vent.user_Event_Adapter.source_URL;
 
 /**
  * Created by EUNJAESHIN on 2017-07-10.
@@ -117,7 +116,7 @@ public class activity_User_Join extends AppCompatActivity {
             String user_type = (String) params[7];
             String account_number = (String) params[8];
 
-            String serverURL = source_URL + "2ventRegister.php";
+            String serverURL = GlobalData.getURL() + "2ventRegister.php";
             String postParameters = "&id=" + id + "&pw=" + pw + "&name=" + name +
                     "&addr=" + addr + "&birthday=" + birth + "&sex=" + sex + "&phone=" + phone +
                     "&user_type=" + user_type + "&account_number=" + account_number;

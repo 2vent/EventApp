@@ -27,12 +27,10 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
 
-import static com.example.win.a2vent.user_Event_Adapter.source_URL;
-
 /**
  * Created by EUNJAESHIN on 2017-07-10.
  * 사용자 메인 화면
- *
+ * <p>
  * Android & PHP & MySQL 예제
  * http://webnautes.tistory.com/category/Android/DATABASE
  * 데이터 바인딩 라이브러리
@@ -70,7 +68,7 @@ public class user_Event_Main extends AppCompatActivity {
         mRecyclerView = binding_UserMain.rviewContent1;
 
         getEventDB = new getEventDB();
-        getEventDB.execute(source_URL + "2ventGetEventAll.php"); // AsyncTask 실행
+        getEventDB.execute(GlobalData.getURL() + "2ventGetEventAll.php"); // AsyncTask 실행
     }
 
     public void onClick_Accountinfo(View v) {
@@ -78,7 +76,7 @@ public class user_Event_Main extends AppCompatActivity {
     }
 
     public void onClick_goMap(View v) {
-        Intent intent = new Intent(this,user_map.class);
+        Intent intent = new Intent(this, user_map.class);
         startActivity(intent);
     }
 

@@ -14,6 +14,7 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Environment;
+import android.os.Handler;
 import android.os.StrictMode;
 import android.provider.MediaStore;
 import android.support.annotation.IdRes;
@@ -40,6 +41,10 @@ import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.io.BufferedOutputStream;
 import java.io.BufferedReader;
 import java.io.DataOutputStream;
@@ -50,13 +55,12 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.lang.reflect.Array;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
-
-import static com.example.win.a2vent.user_Event_Adapter.source_URL;
 
 /**
  * Created by win on 2017-07-10.
@@ -69,9 +73,11 @@ public class owner_Event_Form extends AppCompatActivity {
     private RelativeLayout rlEventForm;
 
     private RadioGroup rgType;
-    private RadioButton rbTypeEnter, rbTypePay;
-    private String strType = "0";
+    private int type = 0;
+    private int status;
 
+    private String strComNo;
+    private ArrayList<CharSequence> arrListStore, arrListComNo;
     private Spinner spinStore;
     private EditText etFixedPrice, etDiscount, etLimitPersons;
 
@@ -79,28 +85,26 @@ public class owner_Event_Form extends AppCompatActivity {
 
     private RadioGroup rgPayment;
     private RadioButton rbCashPayment, rbCardPayment;
-    private String strPayment = "0";
+    private int payment = 0;
 
     private EditText etEventName, etMinimumAge, etMaximumAge;
 
     private static final int REQ_CODE_SELECT_IMAGE = 100;
-    private String absolutePath, imgName;
-    private static String uploadImgPath;
+    private String absolutePath;
+    private static String uploadImgPath = "";
     private static File filePath;
     private ImageView imgContents;
 
     private Switch swConditions;
-    private String strConditions = "0";
+    private int conditions = 0;
 
     private RadioGroup rgSex;
     private RadioButton rbMale, rbFemale, rbAllSex;
-    private String strSex = "1";
+    private int sex = 2;
 
     private Spinner spinLocation;
 
     private Button btnAddSubmit, btnAddTemp, btnAddCancel;
-
-    private long backKeyPressedTime = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -123,8 +127,6 @@ public class owner_Event_Form extends AppCompatActivity {
             }
         });
 
-        rbTypeEnter = (RadioButton) findViewById(R.id.rbTypeEnter);
-        rbTypePay = (RadioButton) findViewById(R.id.rbTypePay);
         rgType = (RadioGroup) findViewById(R.id.rgType);
         rgType.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
             @Override
@@ -132,31 +134,13 @@ public class owner_Event_Form extends AppCompatActivity {
                 switch (checkedId) {
                     case R.id.rbTypeEnter:
                         invisiblePayment();
-                        strType = "0";
+                        type = 0;
                         break;
                     case R.id.rbTypePay:
                         visiblePayment();
-                        strType = "1";
+                        type = 1;
                         break;
                 }
-            }
-        });
-
-        ArrayList<CharSequence> arrListStore = new ArrayList<>();
-        arrListStore.add(0, "AAA");
-        arrListStore.add(1, "BBB");
-        ArrayAdapter<CharSequence> arrAdtSpinnerStore = new ArrayAdapter<>(owner_Event_Form.this, R.layout.support_simple_spinner_dropdown_item, arrListStore);
-        spinStore = (Spinner) findViewById(R.id.spinStore);
-        spinStore.setAdapter(arrAdtSpinnerStore);
-        spinStore.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> parent) {
-
             }
         });
 
@@ -189,11 +173,11 @@ public class owner_Event_Form extends AppCompatActivity {
                 switch (checkedId) {
                     case R.id.rbCashPayment:
                         //Toast.makeText(owner_event_form.this, rbCashPayment.getText().toString(), Toast.LENGTH_SHORT).show();
-                        strPayment = "0";
+                        payment = 0;
                         break;
                     case R.id.rbCardPayment:
                         //Toast.makeText(owner_event_form.this, rbCardPayment.getText().toString(), Toast.LENGTH_SHORT).show();
-                        strPayment = "1";
+                        payment = 1;
                         break;
                 }
             }
@@ -219,9 +203,9 @@ public class owner_Event_Form extends AppCompatActivity {
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 checkedConditions(isChecked);
                 if (isChecked) {
-                    strConditions = "1";
+                    conditions = 1;
                 } else {
-                    strConditions = "0";
+                    conditions = 0;
                 }
             }
         });
@@ -239,15 +223,15 @@ public class owner_Event_Form extends AppCompatActivity {
                 switch (checkedId) {
                     case R.id.rbMale:
                         Toast.makeText(owner_Event_Form.this, rbMale.getText().toString(), Toast.LENGTH_SHORT).show();
-                        strSex = "1";
+                        sex = 1;
                         break;
                     case R.id.rbFemale:
                         Toast.makeText(owner_Event_Form.this, rbFemale.getText().toString(), Toast.LENGTH_SHORT).show();
-                        strSex = "0";
+                        sex = 0;
                         break;
                     case R.id.rbAllSex:
                         Toast.makeText(owner_Event_Form.this, rbAllSex.getText().toString(), Toast.LENGTH_SHORT).show();
-                        strSex = "2";
+                        sex = 2;
                         break;
                 }
             }
@@ -287,26 +271,19 @@ public class owner_Event_Form extends AppCompatActivity {
         btnAddCancel.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                owner_Event_Form.super.onBackPressed();
             }
         });
 
         invisiblePayment();
+
+        GetData getData = new GetData();
+        getData.execute(GlobalData.getLogin_ID());
     }
 
     @Override
     public void onBackPressed() {
-        Toast toast = Toast.makeText(owner_Event_Form.this, "'뒤로' 버튼을 한버 더 누르시면 종료됩니다", Toast.LENGTH_SHORT);
-
-        if (System.currentTimeMillis() > backKeyPressedTime + 2000) {
-            backKeyPressedTime = System.currentTimeMillis();
-            toast.show();
-            return;
-        }
-        if (System.currentTimeMillis() <= backKeyPressedTime + 2000) {
-            toast.cancel();
-            finish();
-        }
+        super.onBackPressed();
     }
 
     @Override
@@ -343,8 +320,6 @@ public class owner_Event_Form extends AppCompatActivity {
 
                     imgContents.setImageBitmap(resized);
                     imgContents.setTag("exist");
-
-                    imgName = strName;
                 } catch (FileNotFoundException e) {
                     e.printStackTrace();
                 } catch (IOException e) {
@@ -426,38 +401,58 @@ public class owner_Event_Form extends AppCompatActivity {
     }
 
     private void onClick_AddSubmit() {
+        status = 0;
         String msg = checkInputData();
-        input(msg, "0");
+        input(msg);
     }
 
     private void onClick_AddTemp() {
+        status = 1;
         String msg = checkInputTempData();
-        input(msg, "1");
+        input(msg);
     }
 
-    private void input(String msg, String stats) {
+    private void input(String msg) {
         if (msg != null) {
             Toast.makeText(owner_Event_Form.this, msg, Toast.LENGTH_SHORT).show();
         } else {
             String _name = etEventName.getText().toString();
-            String _type = strType;
-            String _stats = stats;
-            String _URI = "event_img/";
-            String _price = etFixedPrice.getText().toString().trim();
-            String _dis_price = etDiscount.getText().toString().trim();
-            String _people = etLimitPersons.getText().toString().trim();
+            String _type = String.valueOf(type);
+            String _stats = String.valueOf(status);
+            String _URI;
+            String _price = etFixedPrice.getText().toString().trim().replaceAll(",", "");
+            String _dis_price = etDiscount.getText().toString().trim().replaceAll(",", "");
+            String _people = etLimitPersons.getText().toString().trim().replaceAll(",", "");
             String _startday = etStartDateYear.getText().toString().trim() + etStartDateMonth.getText().toString().trim() + etStartDateDay.getText().toString().trim();
             String _endday = etEndDateYear.getText().toString().trim() + etEndDateMonth.getText().toString().trim() + etEndDateDay.getText().toString().trim();
-            String _starttime = etStartHour.getText().toString().trim() + etStartMin.getText().toString().trim();
-            String _endtime = etEndHour.getText().toString().trim() + etEndMin.getText().toString().trim();
-            String _payment = strPayment;
-            String _target = strConditions;
-            String _minage = etMinimumAge.getText().toString().trim();
-            String _maxage = etMaximumAge.getText().toString().trim();
-            String _sex = strSex;
-            String _area = spinLocation.getSelectedItem().toString();
-            String _com_number = "11111111111";
-            String _id = "1";
+            String _starttime = etStartHour.getText().toString().trim() + etStartMin.getText().toString().trim() + "00";
+            String _endtime = etEndHour.getText().toString().trim() + etEndMin.getText().toString().trim() + "00";
+            String _payment = String.valueOf(payment);
+            String _target = String.valueOf(conditions);
+            String _minage;
+            String _maxage;
+            String _sex;
+            String _area;
+            String _com_number = strComNo;
+            String _id = GlobalData.getLogin_ID();
+
+            if (uploadImgPath != "") {
+                _URI = "event_img/" + _id + "/" + _name + ".jpg";
+            } else {
+                _URI = "";
+            }
+
+            if (conditions == 1) {
+                _minage = etMinimumAge.getText().toString().trim();
+                _maxage = etMaximumAge.getText().toString().trim();
+                _sex = String.valueOf(sex);
+                _area = spinLocation.getSelectedItem().toString();
+            } else {
+                _minage = "";
+                _maxage = "";
+                _sex = "";
+                _area = "";
+            }
 
             InsertData inputTask = new InsertData();
             inputTask.execute(_name, _type, _stats, _URI, _price, _dis_price, _people, _startday, _endday, _starttime, _endtime, _payment, _target, _minage, _maxage, _sex, _area, _com_number, _id);
@@ -473,11 +468,11 @@ public class owner_Event_Form extends AppCompatActivity {
             return "인원제한을 입력하세요";
         } else if (isEmptyEditText(etStartDateYear) || isEmptyEditText(etStartDateMonth) || isEmptyEditText(etStartDateDay) || isEmptyEditText(etStartHour) || isEmptyEditText(etStartMin)) {
             return "이벤트 시작일시를 확인하세요";
-        } else if (!checkStartDate(etStartDateYear, etStartDateMonth, etStartDateDay)) {
+        } else if (!checkStartDate(etStartDateYear, etStartDateMonth, etStartDateDay, etStartHour, etStartMin)) {
             return "현재 날짜보다 이전입니다";
         } else if (isEmptyEditText(etEndDateYear) || isEmptyEditText(etEndDateMonth) || isEmptyEditText(etEndDateDay) || isEmptyEditText(etEndHour) || isEmptyEditText(etEndMin)) {
             return "이벤트 종료일시를 확인하세요";
-        } else if (!checkEndDate(etStartDateYear, etStartDateMonth, etStartDateDay, etEndDateYear, etEndDateMonth, etEndDateDay)) {
+        } else if (!checkEndDate(etStartDateYear, etStartDateMonth, etStartDateDay, etStartHour, etStartMin, etEndDateYear, etEndDateMonth, etEndDateDay, etEndHour, etEndMin)) {
             return "종료 날짜가 시작 날짜보다 이전입니다";
         } else if (isEmptyEditText(etEventName)) {
             return "이벤트 명을 입력하세요";
@@ -492,6 +487,8 @@ public class owner_Event_Form extends AppCompatActivity {
                     return "참가 나이를 확인하세요";
                 }
             }
+        } else if (uploadImgPath == "") {
+            return "이미지를 등록하세요";
         }
 
         return null;
@@ -517,26 +514,42 @@ public class owner_Event_Form extends AppCompatActivity {
         }
     }
 
-    private boolean checkStartDate(EditText etYear, EditText etMonth, EditText etDay) {
+    private boolean checkStartDate(EditText etYear, EditText etMonth, EditText etDay, EditText etHour, EditText etMin) {
         int year = Integer.parseInt(etYear.getText().toString().trim());
         int month = Integer.parseInt(etMonth.getText().toString().trim());
         int day = Integer.parseInt(etDay.getText().toString().trim());
-        int _year, _month, _day;
+        int hour = Integer.parseInt(etHour.getText().toString().trim());
+        int min = Integer.parseInt(etMin.getText().toString().trim());
+        int curYear, curMonth, curDay, curHour, curMin;
         Calendar cal = Calendar.getInstance();
 
-        _year = cal.get(Calendar.YEAR);
+        curYear = cal.get(Calendar.YEAR);
 
-        if (year < _year) {
+        if (year < curYear) {
             return false;
         } else {
-            _month = cal.get(Calendar.MONTH);
-            if (month < _month) {
+            curMonth = cal.get(Calendar.MONTH) + 1;
+            if (month < curMonth) {
                 return false;
             } else {
-                if (month == month) {
-                    _day = cal.get(Calendar.DAY_OF_MONTH);
-                    if (day < _day) {
+                if (month == curMonth) {
+                    curDay = cal.get(Calendar.DATE);
+                    if (day < curDay) {
                         return false;
+                    } else {
+                        if (day == curDay) {
+                            curHour = cal.get(Calendar.HOUR);
+                            if (hour < curHour) {
+                                return false;
+                            } else {
+                                if (hour == curHour) {
+                                    curMin = cal.get(Calendar.MINUTE);
+                                    if (min < curMin) {
+                                        return false;
+                                    }
+                                }
+                            }
+                        }
                     }
                 }
             }
@@ -544,13 +557,17 @@ public class owner_Event_Form extends AppCompatActivity {
         return true;
     }
 
-    private boolean checkEndDate(EditText etYear1, EditText etMonth1, EditText etDay1, EditText etYear2, EditText etMonth2, EditText etDay2) {
+    private boolean checkEndDate(EditText etYear1, EditText etMonth1, EditText etDay1, EditText etHour1, EditText etMin1, EditText etYear2, EditText etMonth2, EditText etDay2, EditText etHour2, EditText etMin2) {
         int year1 = Integer.parseInt(etYear1.getText().toString().trim());
         int month1 = Integer.parseInt(etMonth1.getText().toString().trim());
         int day1 = Integer.parseInt(etDay1.getText().toString().trim());
+        int hour1 = Integer.parseInt(etHour1.getText().toString().trim());
+        int min1 = Integer.parseInt(etMin1.getText().toString().trim());
         int year2 = Integer.parseInt(etYear2.getText().toString().trim());
         int month2 = Integer.parseInt(etMonth2.getText().toString().trim());
         int day2 = Integer.parseInt(etDay2.getText().toString().trim());
+        int hour2 = Integer.parseInt(etHour2.getText().toString().trim());
+        int min2 = Integer.parseInt(etMin2.getText().toString().trim());
 
         if (year1 > year2) {
             return false;
@@ -561,6 +578,18 @@ public class owner_Event_Form extends AppCompatActivity {
                 if (month1 == month2) {
                     if (day1 > day2) {
                         return false;
+                    } else {
+                        if (day1 == day2) {
+                            if (hour1 > hour2) {
+                                return false;
+                            } else {
+                                if (hour1 == hour2) {
+                                    if (min1 > min2) {
+                                        return false;
+                                    }
+                                }
+                            }
+                        }
                     }
                 }
             }
@@ -642,23 +671,6 @@ public class owner_Event_Form extends AppCompatActivity {
         return imgName;
     }
 
-    private class DownloadData extends AsyncTask<String, Void, String> {
-        @Override
-        protected void onPreExecute() {
-            super.onPreExecute();
-        }
-
-        @Override
-        protected void onPostExecute(String result) {
-            super.onPostExecute(result);
-        }
-
-        @Override
-        protected String doInBackground(String... params) {
-            return null;
-        }
-    }
-
     private class InsertData extends AsyncTask<String, Void, String> {
         ProgressDialog progressDialog;
 
@@ -691,7 +703,7 @@ public class owner_Event_Form extends AppCompatActivity {
             String com_number = params[17];
             String id = params[18];
 
-            String serverURL = source_URL + "2ventAddevent.php";
+            String serverURL = GlobalData.getURL() + "2ventAddevent.php";
 
             try {
 
@@ -701,7 +713,7 @@ public class owner_Event_Form extends AppCompatActivity {
                 // 데이터 경계선
                 String delimiter = "\r\n--" + boundary + "\r\n";
 
-                StringBuffer postDataBuiler = new StringBuffer();
+                StringBuffer postDataBuilder = new StringBuffer();
 
                 // 커넥션 생성 및 설정
                 URL url = new URL(serverURL);
@@ -716,77 +728,85 @@ public class owner_Event_Form extends AppCompatActivity {
 
                 // 추가하고 싶은 Key & Value 추가
                 // Key & Value를 추가한 후 꼭 경계선을 삽입해줘야 데이터를 구분할 수 있다.
-                postDataBuiler.append(delimiter);
-                postDataBuiler.append(setValue("event_name", event_name));
-                postDataBuiler.append(delimiter);
-                postDataBuiler.append(setValue("event_type", event_type));
-                postDataBuiler.append(delimiter);
-                postDataBuiler.append(setValue("event_stats", event_stats));
-                postDataBuiler.append(delimiter);
-                postDataBuiler.append(setValue("event_URI", event_URI + id + "/" + imgName));
-                postDataBuiler.append(delimiter);
-                postDataBuiler.append(setValue("event_price", event_price));
-                postDataBuiler.append(delimiter);
-                postDataBuiler.append(setValue("event_dis_price", event_dis_price));
-                postDataBuiler.append(delimiter);
-                postDataBuiler.append(setValue("event_people", event_people));
-                postDataBuiler.append(delimiter);
-                postDataBuiler.append(setValue("event_startday", event_startday));
-                postDataBuiler.append(delimiter);
-                postDataBuiler.append(setValue("event_endday", event_endday));
-                postDataBuiler.append(delimiter);
-                postDataBuiler.append(setValue("event_starttime", event_starttime));
-                postDataBuiler.append(delimiter);
-                postDataBuiler.append(setValue("event_endtime", event_endtime));
-                postDataBuiler.append(delimiter);
-                postDataBuiler.append(setValue("event_payment", event_payment));
-                postDataBuiler.append(delimiter);
-                postDataBuiler.append(setValue("event_target", event_target));
-                postDataBuiler.append(delimiter);
-                postDataBuiler.append(setValue("event_minage", event_minage));
-                postDataBuiler.append(delimiter);
-                postDataBuiler.append(setValue("event_maxage", event_maxage));
-                postDataBuiler.append(delimiter);
-                postDataBuiler.append(setValue("event_sex", event_sex));
-                postDataBuiler.append(delimiter);
-                postDataBuiler.append(setValue("event_area", event_area));
-                postDataBuiler.append(delimiter);
-                postDataBuiler.append(setValue("com_number", com_number));
-                postDataBuiler.append(delimiter);
-                postDataBuiler.append(setValue("id", id));
-                postDataBuiler.append(delimiter);
+                postDataBuilder.append(delimiter);
+                postDataBuilder.append(setValue("event_name", event_name));
+                postDataBuilder.append(delimiter);
+                postDataBuilder.append(setValue("event_type", event_type));
+                postDataBuilder.append(delimiter);
+                postDataBuilder.append(setValue("event_stats", event_stats));
+                postDataBuilder.append(delimiter);
+                postDataBuilder.append(setValue("event_URI", event_URI));
+                postDataBuilder.append(delimiter);
+                postDataBuilder.append(setValue("event_price", event_price));
+                postDataBuilder.append(delimiter);
+                postDataBuilder.append(setValue("event_dis_price", event_dis_price));
+                postDataBuilder.append(delimiter);
+                postDataBuilder.append(setValue("event_people", event_people));
+                postDataBuilder.append(delimiter);
+                postDataBuilder.append(setValue("event_startday", event_startday));
+                postDataBuilder.append(delimiter);
+                postDataBuilder.append(setValue("event_endday", event_endday));
+                postDataBuilder.append(delimiter);
+                postDataBuilder.append(setValue("event_starttime", event_starttime));
+                postDataBuilder.append(delimiter);
+                postDataBuilder.append(setValue("event_endtime", event_endtime));
+                postDataBuilder.append(delimiter);
+                postDataBuilder.append(setValue("event_payment", event_payment));
+                postDataBuilder.append(delimiter);
+                postDataBuilder.append(setValue("event_target", event_target));
+                postDataBuilder.append(delimiter);
+                postDataBuilder.append(setValue("event_minage", event_minage));
+                postDataBuilder.append(delimiter);
+                postDataBuilder.append(setValue("event_maxage", event_maxage));
+                postDataBuilder.append(delimiter);
+                postDataBuilder.append(setValue("event_sex", event_sex));
+                postDataBuilder.append(delimiter);
+                postDataBuilder.append(setValue("event_area", event_area));
+                postDataBuilder.append(delimiter);
+                postDataBuilder.append(setValue("com_number", com_number));
+                postDataBuilder.append(delimiter);
+                postDataBuilder.append(setValue("id", id));
+                postDataBuilder.append(delimiter);
 
-                // 파일 첨부
-                Log.d(TAG, "uploadedPath: " + uploadImgPath);
-                postDataBuiler.append(setFile("uploaded_file", uploadImgPath));
-                postDataBuiler.append("\r\n");
-
-                Log.d(TAG, "data: " + postDataBuiler.toString());
-                // 전송 작업 시작
-                FileInputStream in = new FileInputStream(uploadImgPath);
                 DataOutputStream out = new DataOutputStream(new BufferedOutputStream((conn.getOutputStream())));
 
-                out.writeUTF(postDataBuiler.toString());
+                if (uploadImgPath != "") {
+                    // 파일 첨부
+                    Log.d(TAG, "uploadedPath: " + uploadImgPath);
+                    postDataBuilder.append(setFile("uploaded_file", uploadImgPath));
+                    postDataBuilder.append("\r\n");
 
-                // 파일 복사 작업 시작
-                int maxBufferSize = 1024;
-                int bufferSize = Math.min(in.available(), maxBufferSize);
-                byte[] buffer = new byte[bufferSize];
+                    Log.d(TAG, "data: " + postDataBuilder.toString());
+                    // 전송 작업 시작
+                    FileInputStream in = new FileInputStream(uploadImgPath);
 
-                // 버퍼 크기만큼 파일로부터 바이트 데이터를 읽는다
-                int byteRead = in.read(buffer, 0, bufferSize);
+                    out.writeUTF(postDataBuilder.toString());
 
-                // 전송
-                while (byteRead > 0) {
-                    out.write(buffer);
-                    bufferSize = Math.min(in.available(), maxBufferSize);
-                    byteRead = in.read(buffer, 0, bufferSize);
+                    // 파일 복사 작업 시작
+                    int maxBufferSize = 1024;
+                    int bufferSize = Math.min(in.available(), maxBufferSize);
+                    byte[] buffer = new byte[bufferSize];
+
+                    // 버퍼 크기만큼 파일로부터 바이트 데이터를 읽는다
+                    int byteRead = in.read(buffer, 0, bufferSize);
+
+                    // 전송
+                    while (byteRead > 0) {
+                        out.write(buffer);
+                        bufferSize = Math.min(in.available(), maxBufferSize);
+                        byteRead = in.read(buffer, 0, bufferSize);
+                    }
+
+                    out.writeBytes(delimiter);
+                    out.flush();
+                    out.close();
+                    in.close();
+                } else {
+                    Log.d(TAG, "data: " + postDataBuilder.toString());
+                    out.writeUTF(postDataBuilder.toString());
+                    out.flush();
+                    out.close();
                 }
-
-                out.writeBytes(delimiter);
-                out.flush();
-                out.close();
-                in.close();
 
                 int responseStatusCode = conn.getResponseCode();
                 Log.d(TAG, "POST response code - " + responseStatusCode);
@@ -891,6 +911,163 @@ public class owner_Event_Form extends AppCompatActivity {
             long value = Long.parseLong(str);
             DecimalFormat format = new DecimalFormat("###,###");
             return format.format(value);
+        }
+    }
+
+    private class GetData extends AsyncTask<String, Void, String> {
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+        }
+
+        @Override
+        protected String doInBackground(String... params) {
+            try {
+                StringBuffer postDataBuilder = new StringBuffer();
+
+                // 데이터 구분문자
+                String boundary = "^******^";
+
+                // 데이터 경계선
+                String delimiter = "\r\n--" + boundary + "\r\n";
+
+                StringBuffer postDataBuiler = new StringBuffer();
+
+                // 커넥션 생성 및 설정
+                String serverURL = GlobalData.getURL() + "2ventGetStoreName.php";
+                URL url = new URL(serverURL);
+                HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+                conn.setConnectTimeout(5000);
+                conn.setReadTimeout(5000);
+                conn.setUseCaches(false);
+                conn.setDoOutput(true);
+                conn.setDoInput(true);
+                conn.setRequestMethod("POST");
+                conn.setRequestProperty("Connection", "Keep_Alive");
+                conn.setRequestProperty("Content-Type", "multipart/form-data; boundary=" + boundary);
+
+                // 추가하고 싶은 Key & Value 추가
+                // Key & Value를 추가한 후 꼭 경계선을 삽입해줘야 데이터를 구분할 수 있다.
+                postDataBuilder.append(delimiter);
+                postDataBuilder.append(setValue("id", params[0]));
+                postDataBuilder.append(delimiter);
+
+                DataOutputStream out = new DataOutputStream(new BufferedOutputStream((conn.getOutputStream())));
+
+                Log.d(TAG, "data: " + postDataBuilder.toString());
+                out.writeUTF(postDataBuilder.toString());
+                out.flush();
+                out.close();
+
+                int responseStatusCode = conn.getResponseCode();
+                Log.d(TAG, "POST response code - " + responseStatusCode);
+
+                InputStream inputStream;
+                if (responseStatusCode == conn.HTTP_OK) {
+                    inputStream = conn.getInputStream();
+                } else {
+                    inputStream = conn.getErrorStream();
+                }
+
+                InputStreamReader inputStreamReader = new InputStreamReader(inputStream, "UTF-8");
+                BufferedReader bufferedReader = new BufferedReader(inputStreamReader);
+                StringBuilder sb = new StringBuilder();
+                String line;
+
+                while ((line = bufferedReader.readLine()) != null) {
+                    if (sb.length() > 0) {
+                        sb.append("\n");
+                    }
+                    sb.append(line);
+                }
+                bufferedReader.close();
+
+                return sb.toString();
+            } catch (NullPointerException e) {
+                return new String("NullPoint: " + e.getMessage());
+            } catch (Exception e) {
+                return new String("Error: " + e.getMessage());
+            }
+        }
+
+        @Override
+        protected void onPostExecute(String result) {
+            super.onPostExecute(result);
+            Log.d(TAG, "json : " + result);
+            jsonParser(result);
+        }
+
+        public String setValue(String key, String value) {
+            return "Content-Disposition: form-data; name=\"" + key + "\"\r\n\r\n" + value;
+        }
+
+        public void jsonParser(String str) {
+            JSONObject jsonObject;
+            ArrayList<CharSequence> arrList1 = new ArrayList<>();
+            ArrayList<CharSequence> arrList2 = new ArrayList<>();
+
+            try {
+                jsonObject = new JSONObject(str);
+                JSONArray jsonArray = jsonObject.getJSONArray("ComNameList");
+
+                JSONObject item;
+                String com_number;
+                String com_name;
+
+                if (jsonArray.length() == 0) {
+                    Toast.makeText(owner_Event_Form.this,
+                            "등록된 매장이 없습니다. 매장을 등록해주세요.", Toast.LENGTH_SHORT).show();
+
+                    new Handler().postDelayed(new Runnable() {
+
+                        @Override
+                        public void run() {
+                            owner_Event_Form.this.onBackPressed();
+                        }
+                    }, 2000);
+                }
+
+                for (int i = 0; i < jsonArray.length(); i++) {
+                    item = jsonArray.getJSONObject(i);
+
+                    com_number = item.getString("com_number");
+                    com_name = item.getString("com_name");
+
+                    arrList1.add(com_number);
+                    arrList2.add(com_name);
+                }
+
+                arrListComNo = arrList1;
+                arrListStore = arrList2;
+
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+
+            setAdapter(arrListStore);
+        }
+
+        public void setAdapter(final ArrayList<CharSequence> arrList) {
+            ArrayAdapter<CharSequence> arrAdtSpinner = new ArrayAdapter<>(owner_Event_Form.this, R.layout.support_simple_spinner_dropdown_item, arrList);
+            spinStore = (Spinner) findViewById(R.id.spinStore);
+            spinStore.setAdapter(arrAdtSpinner);
+            spinStore.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+                @Override
+                public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                    for (int i = 0; i < spinStore.getCount(); i++) {
+                        if (spinStore.getSelectedItemPosition() == i) {
+                            strComNo = String.valueOf(arrListComNo.get(i));
+                            Log.d(TAG, "strComNo : " + strComNo);
+                        }
+                    }
+
+                }
+
+                @Override
+                public void onNothingSelected(AdapterView<?> parent) {
+
+                }
+            });
         }
     }
 }

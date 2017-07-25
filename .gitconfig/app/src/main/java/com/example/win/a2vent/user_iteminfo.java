@@ -28,8 +28,6 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 
-import static com.example.win.a2vent.user_Event_Adapter.source_URL;
-
 /**
  * Created by Administrator on 2017-07-03.
  */
@@ -307,7 +305,7 @@ public class user_iteminfo extends AppCompatActivity {
             StringBuilder sb = null;
 
             try {
-                URL url = new URL(source_URL + "2ventAddEntry.php");
+                URL url = new URL(GlobalData.getURL() + "2ventAddEntry.php");
                 HttpURLConnection httpURLConnection = (HttpURLConnection) url.openConnection();
                 httpURLConnection.setRequestMethod("POST");
 
