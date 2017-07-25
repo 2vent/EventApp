@@ -6,25 +6,27 @@ import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 
+import static com.example.win.a2vent.user_Event_Adapter.source_URL;
+
 /**
  * Created by Administrator on 2017-07-13.
  */
 
-public class user_payment extends AppCompatActivity{
+public class user_payment extends AppCompatActivity {
     private WebView webView;
     private WebSettings webSettings;
 
 
     @Override
-    public void onCreate(Bundle save){
+    public void onCreate(Bundle save) {
         super.onCreate(save);
         setContentView(R.layout.user_payment);
-        webView=(WebView) findViewById(R.id.pay_webview);
+        webView = (WebView) findViewById(R.id.pay_webview);
         webView.setWebViewClient(new WebViewClient());
-        webSettings=webView.getSettings();
+        webSettings = webView.getSettings();
 
         webSettings.setJavaScriptEnabled(true);
-        webView.loadUrl("http://192.168.0.106/EventApp/paytest.php");
+        webView.loadUrl(source_URL + "paytest.php");
 
 
     }

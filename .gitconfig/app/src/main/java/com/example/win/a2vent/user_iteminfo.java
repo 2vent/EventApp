@@ -28,6 +28,8 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 
+import static com.example.win.a2vent.user_Event_Adapter.source_URL;
+
 /**
  * Created by Administrator on 2017-07-03.
  */
@@ -45,74 +47,77 @@ public class user_iteminfo extends AppCompatActivity {
 
     private int event_type;
 
-
     private Bitmap mBitmap;
 
-    private int event_number=0;
+    private int event_number = 0;
     private String com_number;
+
+    putEntry putEntry;
+    getEventInfo getEventInfo;
+    infoImageDown infoImageDown;
 
 
     //테스트 용 변수
-    private String testid = "ejshin";
-    private String testname="신은재";
-    private String testaddr="수성구 용학로";
-    private String testbirthday="1993-02-14";
-    private String testsex="1";
-    private String testphone="01035208543";
-
-
+    private String testid = "2";
+    private String testname = "2";
+    private String testaddr = "동대구로";
+    private String testbirthday = "1993-02-14";
+    private String testsex = "1";
+    private String testphone = "01035208543";
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.info);
-        Intent intent=getIntent();
-        event_number=intent.getIntExtra("event_number",0);
-        Log.i("이벤트 넘버",String.valueOf(event_number));
+        Intent intent = getIntent();
+        event_number = intent.getIntExtra("event_number", 0);
+        Log.i("이벤트 넘버", String.valueOf(event_number));
 
-        tv_name=(TextView)findViewById(R.id.info_name);
-        tv_discount=(TextView)findViewById(R.id.info_discount);
-        tv_money=(TextView)findViewById(R.id.info_money);
-        tv_start=(TextView)findViewById(R.id.info_start);
-        tv_end=(TextView)findViewById(R.id.info_end);
-        tv_people=(TextView)findViewById(R.id.info_people);
-        iv_image=(ImageView) findViewById(R.id.info_image);
-        bt_do=(Button)findViewById(R.id.info_do);
-        bt_back=(Button)findViewById(R.id.info_back);
+        tv_name = (TextView) findViewById(R.id.info_name);
+        tv_discount = (TextView) findViewById(R.id.info_discount);
+        tv_money = (TextView) findViewById(R.id.info_money);
+        tv_start = (TextView) findViewById(R.id.info_start);
+        tv_end = (TextView) findViewById(R.id.info_end);
+        tv_people = (TextView) findViewById(R.id.info_people);
+        iv_image = (ImageView) findViewById(R.id.info_image);
+        bt_do = (Button) findViewById(R.id.info_do);
+        bt_back = (Button) findViewById(R.id.info_back);
 
-        ButtonListener buttonListener=new ButtonListener();
+        ButtonListener buttonListener = new ButtonListener();
 
         bt_back.setOnClickListener(buttonListener);
         bt_do.setOnClickListener(buttonListener);
 
 
-        getEventInfo getEventInfo=new getEventInfo();
+        getEventInfo = new getEventInfo();
         getEventInfo.execute(String.valueOf(event_number));
 
     }
+
     @Override
-    protected void onStart(){
+    protected void onStart() {
         super.onStart();
     }
 
 
     //버튼 리스너
-    class ButtonListener implements View.OnClickListener{
+    class ButtonListener implements View.OnClickListener {
         @Override
-        public void onClick(View v){
-            switch (v.getId()){
+        public void onClick(View v) {
+            switch (v.getId()) {
                 case R.id.info_back:
                     finish();
                     break;
                 case R.id.info_do:
-                    if(event_type==0){
+                    if (event_type == 0) {
 
-                        putEntry putEntry=new putEntry();
-                        Log.i("이벤트값",String.valueOf(event_number));
-                        putEntry.execute(String.valueOf(event_number),testid,testname,testaddr,testbirthday,testsex,testphone,String.valueOf(event_type),com_number);
+                        putEntry = new putEntry();
+                        Log.i("이벤트값", Integer.toString(event_number));
+                        putEntry.execute(Integer.toString(event_number), testid, testname, testaddr,
+                                testbirthday, testsex, testphone, Integer.toString(event_type), com_number);
                     } else {
-                        Intent intent= new Intent(getBaseContext(),user_payment.class);
+                        Intent intent = new Intent(getBaseContext(), user_payment.class);
                         startActivity(intent);
                     }
 
@@ -146,7 +151,7 @@ public class user_iteminfo extends AppCompatActivity {
                 OutputStream os = httpURLConnection.getOutputStream();
 
                 BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(os, "UTF8"));
-                writer.write("event_number="+args[0]);
+                writer.write("event_number=" + args[0]);
                 writer.flush();
                 writer.close();
                 os.close();
@@ -210,17 +215,17 @@ public class user_iteminfo extends AppCompatActivity {
                 tv_name.setText(event_name);
                 tv_money.setText(event_price);
                 tv_discount.setText(event_dis_price);
-                tv_start.setText(event_startday+" "+event_starttime);
-                tv_end.setText(event_endday+" "+event_endtime);
+                tv_start.setText(event_startday + " " + event_starttime);
+                tv_end.setText(event_endday + " " + event_endtime);
                 tv_people.setText(event_people);
 
-                if(event_type==0){
+                if (event_type == 0) {
                     bt_do.setText("응모하기");
-                } else{
+                } else {
                     bt_do.setText("결제하기");
                 }
 
-                infoImageDown infoImageDown=new infoImageDown();
+                infoImageDown = new infoImageDown();
                 infoImageDown.execute(event_URI);
 
             }
@@ -300,10 +305,9 @@ public class user_iteminfo extends AppCompatActivity {
 
         protected String doInBackground(String... args) {
             StringBuilder sb = null;
+
             try {
-
-
-                URL url = new URL("http://192.168.0.106/EventApp/2ventAddEntry.php");
+                URL url = new URL(source_URL + "2ventAddEntry.php");
                 HttpURLConnection httpURLConnection = (HttpURLConnection) url.openConnection();
                 httpURLConnection.setRequestMethod("POST");
 
@@ -313,7 +317,10 @@ public class user_iteminfo extends AppCompatActivity {
                 OutputStream os = httpURLConnection.getOutputStream();
 
                 BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(os, "UTF8"));
-                writer.write("&event_number="+args[0]+"&id="+args[1]+"&entry_name="+args[2]+"&entry_addr="+args[3]+"&entry_birthday="+args[4]+"&entry_sex="+args[5]+"&entry_phone="+args[6]+"&entry_type="+args[7]+"&com_number="+args[8]);
+                writer.write("&event_number=" + args[0] + "&id=" + args[1] + "&entry_name=" + args[2]
+                        + "&entry_addr=" + args[3] + "&entry_birthday=" + args[4] + "&entry_sex="
+                        + args[5] + "&entry_phone=" + args[6] + "&entry_type=" + args[7]
+                        + "&com_number=" + args[8]);
                 writer.flush();
                 writer.close();
                 os.close();
@@ -341,18 +348,40 @@ public class user_iteminfo extends AppCompatActivity {
 
         protected void onPostExecute(String s) {
             super.onPostExecute(s);
-            Log.i("엔트리 추가",s);
-            if(Integer.valueOf(s)>0){
-                Toast.makeText(user_iteminfo.this,"응모 하였습니다.",Toast.LENGTH_SHORT);
-                finish();
-            } else{
-                Toast.makeText(getBaseContext(),"응모 실패",Toast.LENGTH_SHORT);
+            Log.d("echo", s);
+            if (s.equals("응모 성공")) {
+                Toast.makeText(user_iteminfo.this, "응모 완료", Toast.LENGTH_SHORT).show();
+            } else if (s.equals("이미 응모함")){
+                Toast.makeText(user_iteminfo.this, "이미 응모한 이벤트입니다", Toast.LENGTH_SHORT).show();
+            } else {
+                Toast.makeText(user_iteminfo.this, "응모 실패", Toast.LENGTH_SHORT).show();
             }
-
-
-
         }
 
+    }
+
+    @Override
+    protected void onDestroy() {
+        if (putEntry != null) {
+            putEntry.cancel(true);
+        } else if (infoImageDown != null) {
+            infoImageDown.cancel(true);
+        } else if (getEventInfo != null) {
+            getEventInfo.cancel(true);
+        }
+        super.onDestroy();
+    }
+
+    @Override
+    protected void onPause() {
+        if (putEntry != null) {
+            putEntry.cancel(true);
+        } else if (infoImageDown != null) {
+            infoImageDown.cancel(true);
+        } else if (getEventInfo != null) {
+            getEventInfo.cancel(true);
+        }
+        super.onPause();
     }
 
 

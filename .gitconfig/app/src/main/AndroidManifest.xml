@@ -39,7 +39,7 @@
         <activity android:name=".owner_Event_Addevent" />
         <activity android:name=".owner_AddStore"></activity>
         <activity android:name=".owner_AddStore_webView"></activity>
-        <activity android:name="owner_event_form"></activity>
+        <activity android:name=".owner_Event_Form"></activity>
         <activity android:name=".user_map"></activity>
         <activity android:name=".user_payment"></activity>
         <activity android:name=".user_iteminfo"></activity>

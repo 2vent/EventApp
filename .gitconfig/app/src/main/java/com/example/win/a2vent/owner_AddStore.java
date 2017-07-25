@@ -17,6 +17,7 @@ import android.support.annotation.IdRes;
 import android.support.v4.content.FileProvider;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.util.Xml;
 import android.view.View;
 import android.webkit.WebView;
 import android.widget.AdapterView;
@@ -44,6 +45,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
+import java.io.UTFDataFormatException;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URI;
@@ -352,7 +354,6 @@ public class owner_AddStore extends AppCompatActivity implements View.OnClickLis
 
 //                OutputStream outputStream = httpURLConnection.getOutputStream();
 //                outputStream.write(postParameters.getBytes("UTF-8"));
-
 
                 dos = new DataOutputStream(httpURLConnection.getOutputStream());
 
